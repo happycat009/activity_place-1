@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement //开启事务有没有影响不大
-@MapperScan("com.huangjiabin.springboot.mapper")
+//@MapperScan("com.huangjiabin.springboot.mapper") 这里不用这个，因为在dao接口上加了@Mapper注解
 public class Application {
 
     public static void main(String[] args) {

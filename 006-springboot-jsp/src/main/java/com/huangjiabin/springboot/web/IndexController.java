@@ -20,6 +20,6 @@ public class IndexController {
     @RequestMapping(value="/tall")
     public String tall(Model model){
         model.addAttribute("message","我是tall");
-        return "say";
+        return "say";//跳转的页面，在配置文件里配置了视图解析器不用写.jsp后缀
     }
 }

@@ -1,9 +1,10 @@
 package com.huangjiabin.springboot.mapper;
 
 import com.huangjiabin.springboot.model.Student;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
-@Component
+@Mapper
 public interface StudentMapper {
     int deleteByPrimaryKey(Integer id);
 

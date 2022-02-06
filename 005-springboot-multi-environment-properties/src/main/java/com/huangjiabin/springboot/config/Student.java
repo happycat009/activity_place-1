@@ -3,6 +3,11 @@ package com.huangjiabin.springboot.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/*
+    配置文件的读取方式一：
+    通过@Component和@ConfigurationProperties()注解去映射
+    prefix = "student" 属性可以区别同名配置
+*/
 @Component
 @ConfigurationProperties(prefix = "student")
 public class Student {
