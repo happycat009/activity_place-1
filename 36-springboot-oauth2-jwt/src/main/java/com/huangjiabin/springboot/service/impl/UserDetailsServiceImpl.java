@@ -13,14 +13,15 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private PasswordEncoder pw;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("进入了loadUserByUsername");
-        String password=pw.encode("123456");
+        String password = pw.encode("123456");
         //这个user是SpringSecurity里的User，我们可以自己定义
         //return new User(username,password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,normal,ROLE_abc,/main.html"));
         //自定义的User，这里实现了UserDetails接口
-        return new User("admin",password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+        return new User("admin", password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
         /*
             整合jwt用的密码模式，生成的token变成jwt：
             {
