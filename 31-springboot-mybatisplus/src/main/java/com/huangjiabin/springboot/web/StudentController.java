@@ -53,7 +53,6 @@ public class StudentController {
         2、如果属性为空且为基本类型如int则该属性为0。
         3、因为判断是否更新是看是否null，基本类型int默认类型为0。
         4、所有包装类型默认类型为null
-
     */
     @PutMapping(value="/student/create/{id}/{name}/{sno}/{phone}/{dormitory}")
     public Student updateStudentById (@PathVariable("id") String id,@PathVariable("name") String name,@PathVariable("sno") String sno,

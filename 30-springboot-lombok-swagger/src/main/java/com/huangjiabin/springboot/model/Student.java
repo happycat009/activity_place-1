@@ -6,7 +6,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 @Component
-@Data  //所有
+@Data  //get,set,toString
 /*
 @NoArgsConstructor 无参构造
 @Getter

@@ -91,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     权限之间任意一个达成则放行，只要页面被拦截则都需要登录anyRequest()则所有页面都需要登录
                     permitAll：允许所有人访问
                     denyAll:   不允许任何人访问
-                    anonymous： 可以匿名访问和permitAlll类似
+                    anonymous： 可以匿名访问和permitAll类似
                     authenticated： 需要认证才能访问
                     fullyAuthenticated：记住我进来的不能访问，得登录
                     rememberMe：只有记住我的用户才能访问
