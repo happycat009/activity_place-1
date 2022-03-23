@@ -59,9 +59,7 @@ public class LoginController {
         String ip= IpUtil.getIpAddr(request);
         String info = IpUtil.getIpInfo(ip);
         map.put("address",info);
-        RespBean.success("退出成功",map);
-        System.out.println();
-        return RespBean.success("退出成功",map);
+        return RespBean.success("获取成功",map);
     }
     @ApiOperation(value = "test")
     @GetMapping("/test")

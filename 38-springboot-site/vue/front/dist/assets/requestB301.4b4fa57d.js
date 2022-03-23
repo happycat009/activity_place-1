@@ -1,0 +1,1 @@
+import{r as s}from"./index.4c3bf3be.js";const m=(t,r)=>{const o={methodname:"B301",aab105:t,info:r};return new Promise((a,n)=>{s("/frontRestService/frontCommonDataRestService/getData",o).then(e=>{a(e)}).catch(e=>{n(e)})})};export{m as r};

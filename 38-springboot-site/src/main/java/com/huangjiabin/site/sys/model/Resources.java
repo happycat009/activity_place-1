@@ -3,6 +3,7 @@ package com.huangjiabin.site.sys.model;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModel;
@@ -47,7 +48,7 @@ public class Resources implements Serializable {
     private Integer number;
 
     @ApiModelProperty(value = "购入日期")
-    private LocalDateTime accountDate;
+    private LocalDate accountDate;
 
     @ApiModelProperty(value = "使用年限")
     private Integer useYear;
@@ -62,7 +63,9 @@ public class Resources implements Serializable {
     private String remark;
 
     @ApiModelProperty(value = "是否被删除")
-    private String isDelete;
+    private Integer isDelete;
 
+    @ApiModelProperty(value = "资源照片")
+    private String photo;
 
 }

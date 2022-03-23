@@ -3,6 +3,8 @@ package com.huangjiabin.site.sys.mapper;
 import com.huangjiabin.site.sys.model.Authority;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 权限表 Mapper 接口
@@ -13,4 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface AuthorityMapper extends BaseMapper<Authority> {
 
+    List<Authority> getAuthorityWithRole();
+
+    List<Authority> getAuthorityByUserId(Long userId);
 }

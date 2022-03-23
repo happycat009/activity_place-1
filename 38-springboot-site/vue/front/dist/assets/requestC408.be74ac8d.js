@@ -1,0 +1,1 @@
+import{r as n}from"./index.4c3bf3be.js";const m=t=>{const r={methodnamedesc:"\u6839\u636E\u8865\u8D34\u9879\u76EE\u7F16\u7801\u83B7\u53D6\u8865\u8D34\u9879\u76EE\u7533\u62A5\u6D41\u7A0B\u4FE1\u606F",methodname:"C408",chi031:t};return new Promise((o,a)=>{n("/frontRestService/frontCommonDataRestService/getData",r).then(e=>{o(e)}).catch(e=>{a(e)})})};export{m as r};

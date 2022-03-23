@@ -72,15 +72,16 @@ ROLE_USER和 ROLE_ADMIN 应用在所有的 URL 请求上。对于默认的 Acces
 public class CustomUrlDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) throws AccessDeniedException, InsufficientAuthenticationException {
-        System.out.println("3333");
+        System.out.println("AccessDecisionManager============");
+//        for(ConfigAttribute configAttribute:collection){
+//            String needRole = configAttribute.getAttribute();
+//        }
+        System.out.println("collection=========="+collection);
         for(ConfigAttribute configAttribute:collection){
-            String needRole = configAttribute.getAttribute();
-
-        }
-        /*for(ConfigAttribute configAttribute:collection){
             //api所需要的角色
             String needRole = configAttribute.getAttribute();
-            System.out.println(333);
+            System.out.println("AccessDecisionManager2============");
+            System.out.println("needRole============"+needRole);
 
             //判断api是不是没配角色
             if("ROLE_LOGIN".equals(needRole)){
@@ -101,8 +102,8 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
                     return;
                 }
             }
-            //throw new AccessDeniedException("权限不足，请联系管理员");
-        }*/
+            throw new AccessDeniedException("权限不足，请联系管理员");
+        }
 
     }
 

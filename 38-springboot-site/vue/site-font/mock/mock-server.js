@@ -31,8 +31,9 @@ function unregisterRoutes() {
   })
 }
 
-// for mock server
+// for mock server 模拟服务器
 const responseFake = (url, type, respond) => {
+  console.log("模拟乐乐乐乐乐乐乐乐乐乐了")
   return {
     url: new RegExp(`${process.env.VUE_APP_BASE_API}${url}`),
     type: type || 'get',

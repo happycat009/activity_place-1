@@ -1,0 +1,11 @@
+// 此页面引入 各页面样式 进行样式合并
+
+// 全局控制变量 包括 mixins
+
+@import './variables/index';
+
+// 多主题配置
+@import './themes/index.scss';
+
+@import './components/index.scss';
+@import './project/index.scss';

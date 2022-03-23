@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/sys")
@@ -38,8 +40,7 @@ public class HWCloudController {
     @PostMapping("/upload")
     public  RespBean upload(@RequestParam("file") MultipartFile file, HttpServletRequest req) throws IOException {
         if(file==null) return RespBean.error("上传失败，请先选择文件");
-        String Key = file.getOriginalFilename();
-        //  out.println(Key);
+        String Key =  UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
         InputStream inputStream = null;
         try {
             inputStream = file.getInputStream();
@@ -48,7 +49,9 @@ public class HWCloudController {
         }
         HWCloudUtils.ObsUpload("activity-place",Key,inputStream);
         System.out.println("上传成功"+Key);
-        return RespBean.success("成功");
+        HashMap map = new HashMap();
+        map.put("filename",Key);
+        return RespBean.success("成功",map);
     }
     @GetMapping("/downloads")
     public RespBean downloads( String filename, HttpServletRequest req, HttpServletResponse rep) {
@@ -65,21 +68,21 @@ public class HWCloudController {
     }
 
     @ApiOperation(value = "发送邮箱")
-    @GetMapping("/sendEmail")
-    public String  sendMail() { //String address
+    @GetMapping("/sendEmail/{email}")
+    public RespBean sendMail(@PathVariable("email") String email) { //String address
         //发邮件
         SimpleMailMessage message = new SimpleMailMessage();
         //发件人邮件地址(上面获取到的，也可以直接填写,string类型)
         message.setFrom(username);
         //要发送的qq邮箱(收件人地址)
         //message.setTo("2711198788@qq.com");//刘杰
-        message.setTo("2048622419@qq.com");
+        message.setTo(email);
         //邮件主题
         message.setSubject("激情网址，活力四射");
         //邮件正文
         message.setText("https://www.shdf.gov.cn/");//！！！
         javaMailSender.send(message);
-        return "发送成功！";
+        return RespBean.success("发送成功！");
     }
 
 }

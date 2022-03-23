@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huangjiabin.site.sys.model.Place;
 import com.huangjiabin.site.sys.model.RespBean;
+import com.huangjiabin.site.sys.model.User;
 import com.huangjiabin.site.sys.service.PlaceService;
+import com.huangjiabin.site.sys.util.EntityUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +34,15 @@ public class PlaceController {
 
     @ApiOperation(value="创建场地")
     @PostMapping("/createPlace")
-    public RespBean createPlace (@RequestBody Place place, HttpServletRequest request){
-
-        boolean result = placeService.save(place);
-        if(result){
-            return RespBean.success("场地创建成功",place);
+    public RespBean createPlace (@RequestBody Map map, HttpServletRequest request){
+        try {
+            Place place=EntityUtil.mapToBean(map, Place.class);
+            boolean result = placeService.save(place);
+            if(result){
+                return RespBean.success("场地创建成功",place);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return RespBean.error("场地创建失败");
     }

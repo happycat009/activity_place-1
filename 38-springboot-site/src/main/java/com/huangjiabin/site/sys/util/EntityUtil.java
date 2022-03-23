@@ -6,6 +6,7 @@ import com.huangjiabin.site.sys.model.User;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -56,7 +57,17 @@ public class EntityUtil {
                     }
                 }else if(field.getType().getSimpleName().equals("LocalDateTime")){
                     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    LocalDateTime ldt = LocalDateTime.parse((String)map.get(field.getName()),df);
+                    LocalDateTime ldt;
+                    if(((String)map.get(field.getName())).lastIndexOf("00")==((String)map.get(field.getName())).length()-2){
+                        map.put(field.getName(),((String)map.get(field.getName())).substring(0,((String)map.get(field.getName())).length()-1)+"1");
+                        ldt = LocalDateTime.parse((String)map.get(field.getName()),df);
+                    }else {
+                        ldt = LocalDateTime.parse((String)map.get(field.getName()),df);
+                    }
+                    field.set(object,ldt);
+                }else if(field.getType().getSimpleName().equals("LocalDate")){
+                    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate ldt = LocalDate.parse((String)map.get(field.getName()),df);
                     field.set(object,ldt);
                 }
                 else {

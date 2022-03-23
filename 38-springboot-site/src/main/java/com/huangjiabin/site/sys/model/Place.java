@@ -2,6 +2,8 @@ package com.huangjiabin.site.sys.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDate;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -46,6 +48,18 @@ public class Place implements Serializable {
 
     @ApiModelProperty(value = "容纳人数（单位个）")
     private Integer capacity;
+
+    @ApiModelProperty(value = "创建时间")
+    private LocalDate createTime;
+
+    @ApiModelProperty(value = "是否被禁用（0为否，1为是）")
+    private Integer disable;
+
+    @ApiModelProperty(value = "场地照片")
+    private String photo;
+
+
+
 
 
 }

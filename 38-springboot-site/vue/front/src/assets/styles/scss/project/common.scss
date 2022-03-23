@@ -1,0 +1,80 @@
+// 所有页面公用样式
+.page {
+  min-width: 1220px;
+}
+.container {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+// 表格
+$table-border-color: #d6e7ff;
+.custom-table-header {
+  width: 100%;
+  border: solid 1px $table-border-color;
+  padding: 0 36px;
+  background-color: #eff6ff;
+  .name {
+    height: 57px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #333333;
+    padding: 16px 0;
+    padding-left: 16px;
+    position: relative;
+    &::after {
+      content: '*';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      font-size: 18px;
+      transform: translateY(-50%);
+      line-height: 40px;
+      color: #e50101;
+    }
+  }
+}
+.custom-table-cells {
+  .custom-table-cell {
+    display: flex;
+    border-right: solid 1px $table-border-color;
+    border-left: solid 1px $table-border-color;
+    border-bottom: solid 1px $table-border-color;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #333333;
+    align-items: center;
+    &:first-child {
+      border-top: solid 1px $table-border-color;
+    }
+    .key {
+      width: 166px;
+      height: 100%;
+      padding: 16px;
+      text-align: center;
+    }
+    .value {
+      flex: 1;
+      overflow: hidden;
+      padding: 16px 36px;
+      border-left: solid 1px $table-border-color;
+      ul {
+        li {
+          position: relative;
+          margin-bottom: 12px;
+          &::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: -10px;
+            width: 4px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 2px;
+          }
+        }
+      }
+    }
+  }
+}

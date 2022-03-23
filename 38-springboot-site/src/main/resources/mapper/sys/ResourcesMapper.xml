@@ -17,6 +17,7 @@
         <result column="damage_rate" property="damageRate" />
         <result column="remark" property="remark" />
         <result column="is_delete" property="isDelete"/>
+        <result column="photo" property="photo"/>
     </resultMap>
 
 </mapper>

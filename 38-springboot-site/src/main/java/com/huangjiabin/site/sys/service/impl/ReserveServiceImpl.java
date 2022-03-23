@@ -6,6 +6,8 @@ import com.huangjiabin.site.sys.service.ReserveService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * <p>
  * 预约表 服务实现类
@@ -17,4 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> implements ReserveService {
 
+    @Override
+    public Map getPlaceReserve(Long placeId) {
+
+        return null;
+    }
 }

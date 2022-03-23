@@ -1,0 +1,22 @@
+// @import '../variables/color';
+/* 主题颜色 */
+// styles/element/index.scss
+/* just override what you need */
+// @forward 'element-plus/theme-chalk/src/common/var.scss' with (
+//   $colors: (
+//     'primary': (
+//       'base': #f00,
+//     ),
+//   )
+// );
+
+// If you just import on demand, you can ignore the following content.
+// 如果你想导入所有样式:
+// @use 'element-plus/theme-chalk/src/index.scss' as *;
+
+:root {
+  --el-color-primary: #207cff;
+}
+.el-table {
+  --el-table-border-color: #d8e8ff !important;
+}

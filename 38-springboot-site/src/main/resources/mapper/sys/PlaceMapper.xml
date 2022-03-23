@@ -12,6 +12,9 @@
         <result column="address" property="address" />
         <result column="security" property="security" />
         <result column="capacity" property="capacity" />
+        <result column="create_time" property="createTime"/>
+        <result column="disable" property="disable"/>
+        <result column="photo" property="photo"/>
     </resultMap>
 
 </mapper>

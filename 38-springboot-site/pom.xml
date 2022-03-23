@@ -137,7 +137,7 @@
 
 
 	<build>
-		<finalName>activity_palce</finalName>
+		<finalName>activity_place</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

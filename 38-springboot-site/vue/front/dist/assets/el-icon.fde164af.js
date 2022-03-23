@@ -1,0 +1,1 @@
+import{r as n}from"./index.4c3bf3be.js";const c=(t,r)=>{const a={fileContent:t,fileName:r};return new Promise((o,s)=>{n("/upload/uploadFileByBase64",a,"POST",!0,"\u4E0A\u4F20\u4E2D").then(e=>{o(e)}).catch(e=>{s(e)})})};export{c as r};

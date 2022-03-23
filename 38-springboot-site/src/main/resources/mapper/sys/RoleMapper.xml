@@ -8,11 +8,11 @@
         <result column="name" property="name" />
         <result column="disabled" property="disabled" />
         <result column="del_flag" property="delFlag" />
-        <result column="describe" property="describe" />
+        <result column="desc" property="describe" />
     </resultMap>
 
     <select id="selectRoleByUserId" resultType="com.huangjiabin.site.sys.model.Role">
-        select r.id,r.name,r.disabled,r.del_flag,r.describe
+        select r.id,r.name,r.disabled,r.del_flag,r.desc
         from sys_role as r
         left join sys_user_role as ur
         on r.id=ur.role_id

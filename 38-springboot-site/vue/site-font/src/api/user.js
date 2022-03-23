@@ -1,8 +1,10 @@
 import request from '@/utils/request'
 
 export function login(data) {
+  const { username, password } = data
   return request({
-    url: '/vue-element-admin/user/login',
+    // url: '/vue-element-admin/user/login',
+    url: '/sys/login/' + username + '/' + password + '/aaaa',
     method: 'post',
     data
   })

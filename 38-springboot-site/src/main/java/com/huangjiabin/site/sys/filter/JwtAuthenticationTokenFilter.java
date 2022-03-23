@@ -28,7 +28,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println(222);
+        System.out.println("JwtAuthenticationTokenFilter==========");
         //请求头中获取Authorization值
         String autHeader=request.getHeader(tokenHeader);
         //存在token，先判断是否存在Authorization值，值是否以Bearer开头

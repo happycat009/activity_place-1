@@ -47,7 +47,6 @@ public class UserController {
         page.setSize(size);// 每页的记录数
         IPage<Map<String,Object>> result = userService.pageMaps(page);
         return RespBean.success("true",result);
-
     }
 
     @ApiOperation(value = "创建用户账号，并返回用户信息")
@@ -87,6 +86,7 @@ public class UserController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException();
         }
         RespBean error = RespBean.error("创建失败");
         return error;

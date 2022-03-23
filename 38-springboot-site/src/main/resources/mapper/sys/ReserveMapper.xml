@@ -10,7 +10,11 @@
         <result column="create_time" property="createTime" />
         <result column="start_time" property="startTime" />
         <result column="end_time" property="endTime" />
-        <result column="status" property="status" />
+        <result column="reserve_status" property="reserveStatus" />
+        <result column="reserve_target" property="reserveTarget" />
+        <result column="is_delete" property="isDelete" />
+        <result column="reserve_reason" property="reserveReason" />
+        <result column="is_cancel" property="isCancel" />
     </resultMap>
 
 </mapper>

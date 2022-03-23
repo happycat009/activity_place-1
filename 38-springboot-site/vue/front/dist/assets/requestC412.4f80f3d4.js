@@ -1,0 +1,1 @@
+import{r as c}from"./index.4c3bf3be.js";const a=(r,s)=>{const t={chi031:r,aab001:s};return new Promise((n,o)=>{c("/webservice/webserviceInvokeRest/invoke/C412",t).then(e=>{n(e)}).catch(e=>{o(e)})})};export{a as r};
