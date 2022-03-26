@@ -1,9 +1,12 @@
 package com.huangjiabin.site.sys.controller;
 
 import com.huangjiabin.site.sys.model.RespBean;
+import com.huangjiabin.site.sys.util.CommonUtil;
 import com.huangjiabin.site.sys.util.HWCloudUtils;
+import com.huangjiabin.site.sys.util.JwtTokenUtil;
 import com.obs.services.model.ObsObject;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -26,6 +30,8 @@ import java.util.UUID;
 public class HWCloudController {
     @Resource
     private JavaMailSender javaMailSender;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
     //这一步是获取application.properties中设置的发件人邮箱地址
     @Value("${spring.mail.username}")
     private String username;
@@ -68,8 +74,8 @@ public class HWCloudController {
     }
 
     @ApiOperation(value = "发送邮箱")
-    @GetMapping("/sendEmail/{email}")
-    public RespBean sendMail(@PathVariable("email") String email) { //String address
+    @PostMapping("/sendEmail/{email}")
+    public RespBean sendMail(@PathVariable("email") String email,HttpServletRequest request) { //String address
         //发邮件
         SimpleMailMessage message = new SimpleMailMessage();
         //发件人邮件地址(上面获取到的，也可以直接填写,string类型)
@@ -78,11 +84,16 @@ public class HWCloudController {
         //message.setTo("2711198788@qq.com");//刘杰
         message.setTo(email);
         //邮件主题
-        message.setSubject("激情网址，活力四射");
+        String code=CommonUtil.getRandomNumCode(4);
+        message.setSubject("您注册的校园公共活动场所验证码是【"+code+"】五分钟内有效！！！");
+        String emailToken=jwtTokenUtil.generateEmailToken(code);
+        System.out.println("wwwwwwwwwwwwwwwwwwwwwwwww"+jwtTokenUtil.getCodeByToken(emailToken));
         //邮件正文
         message.setText("https://www.shdf.gov.cn/");//！！！
         javaMailSender.send(message);
-        return RespBean.success("发送成功！");
+        Map map = new HashMap();
+        map.put("token",emailToken);
+        return RespBean.success("发送成功！",map);
     }
 
 }

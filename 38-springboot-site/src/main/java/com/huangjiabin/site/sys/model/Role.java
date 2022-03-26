@@ -38,7 +38,7 @@ public class Role implements Serializable {
     private Integer delFlag;
 
     @ApiModelProperty(value = "角色备注")
-    private String describe;
+    private String desc;
 
 
 }

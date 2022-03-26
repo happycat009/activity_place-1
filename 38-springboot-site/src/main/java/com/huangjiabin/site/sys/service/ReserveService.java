@@ -1,5 +1,6 @@
 package com.huangjiabin.site.sys.service;
 
+import com.huangjiabin.site.sys.model.PageInfo;
 import com.huangjiabin.site.sys.model.Reserve;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -15,4 +16,6 @@ import java.util.Map;
  */
 public interface ReserveService extends IService<Reserve> {
     Map getPlaceReserve(Long placeId);
+
+    PageInfo<Reserve> getAllReserveForPage(Integer pageNum, Integer pageSize);
 }

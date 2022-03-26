@@ -1,1 +1,0 @@
-export { colorToRgba } from './colorToRgba'

@@ -119,6 +119,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                     "/sys/downloads"
                                     ,"/sys/upload"
                         ,"/sys/login/**"
+                        ,"/sys/sendEmail/**"
+                        ,"/sys/user/createUser"
+                        ,"/sys/user//createUserStudent"
                         /*,"/sys/**"*/
                                         );
     }

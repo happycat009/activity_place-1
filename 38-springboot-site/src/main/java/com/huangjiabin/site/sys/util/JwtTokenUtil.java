@@ -66,7 +66,7 @@ public class JwtTokenUtil {
     /*
         验证token是否过期
     */
-    private boolean isTokenExpiration(String token){
+    public boolean isTokenExpiration(String token){
         return getClaimsFromToken(token).getExpiration().before(new Date());
     }
     /*
@@ -82,5 +82,20 @@ public class JwtTokenUtil {
         Claims claims = getClaimsFromToken(token);
         claims.put(CLAIN_KEY_CREATED,new Date());
         return generateToken(claims);
+    }
+    /*根据邮箱验证码获取token*/
+    public String generateEmailToken(String code){
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("code",code);
+        claims.put(CLAIN_KEY_CREATED,new Date());
+        return Jwts.builder()
+                .setClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis()+1000*3600))
+                .signWith(SignatureAlgorithm.HS512,secret)
+                .compact();
+    }
+    /*根据token获取验证码*/
+    public String getCodeByToken(String token){
+        return (String) getClaimsFromToken(token).get("code");
     }
 }

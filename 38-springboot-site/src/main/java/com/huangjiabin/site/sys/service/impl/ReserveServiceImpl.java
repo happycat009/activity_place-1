@@ -1,5 +1,7 @@
 package com.huangjiabin.site.sys.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.huangjiabin.site.sys.model.PageInfo;
 import com.huangjiabin.site.sys.model.Reserve;
 import com.huangjiabin.site.sys.mapper.ReserveMapper;
 import com.huangjiabin.site.sys.service.ReserveService;
@@ -23,5 +25,14 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
     public Map getPlaceReserve(Long placeId) {
 
         return null;
+    }
+
+    @Override
+    public PageInfo<Reserve> getAllReserveForPage(Integer pageNum, Integer pageSize) {
+        Page<Reserve> cityPage = new Page<>(pageNum, pageSize);
+        PageInfo<Reserve> pageInfo = new PageInfo<>();
+        pageInfo.setPageInfo(baseMapper.selectPage(cityPage, null));
+        return pageInfo;
+
     }
 }

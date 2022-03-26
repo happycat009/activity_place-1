@@ -71,6 +71,12 @@ public class User implements Serializable, UserDetails {
     @ApiModelProperty(value = "旧密码")
     private String oldPassword;
 
+    @ApiModelProperty(value = "邮箱")
+    private String email;
+
+    @ApiModelProperty(value = "头像")
+    private String photo;
+
     @ApiModelProperty(value = "角色")
     @TableField(exist = false)
     private List<Role> roles;

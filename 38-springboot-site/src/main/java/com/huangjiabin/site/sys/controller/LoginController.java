@@ -3,9 +3,11 @@ package com.huangjiabin.site.sys.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.huangjiabin.site.sys.model.RespBean;
+import com.huangjiabin.site.sys.model.Student;
 import com.huangjiabin.site.sys.model.User;
 import com.huangjiabin.site.sys.service.LoginService;
 import com.huangjiabin.site.sys.service.RoleService;
+import com.huangjiabin.site.sys.service.StudentService;
 import com.huangjiabin.site.sys.service.UserService;
 import com.huangjiabin.site.sys.util.IpUtil;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +35,8 @@ public class LoginController {
     private DefaultKaptcha defaultKaptcha;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private StudentService studentService;
 
     @ApiOperation(value = "登录之返回token")
     @PostMapping("/login/{username}/{password}/{code}")
@@ -54,8 +58,13 @@ public class LoginController {
         User user= userService.getOne(queryWrapper);
         user.setRoles(roleService.selectRoleByUserId(user.getId()));
         user.setPassword(null);
+        QueryWrapper queryWrapper2 = new QueryWrapper();
+        queryWrapper2.eq("student_id",user.getId());
+        Student student = studentService.getOne(queryWrapper2);
         Map<String,Object> map = new HashMap<>();
         map.put("user",user);
+        map.put("student",student);
+
         String ip= IpUtil.getIpAddr(request);
         String info = IpUtil.getIpInfo(ip);
         map.put("address",info);

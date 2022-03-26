@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huangjiabin.site.sys.model.*;
-import com.huangjiabin.site.sys.service.ActivitybService;
-import com.huangjiabin.site.sys.service.ReserveHandleService;
-import com.huangjiabin.site.sys.service.ReserveService;
+import com.huangjiabin.site.sys.service.*;
 import com.huangjiabin.site.sys.util.EntityUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,11 +36,17 @@ import java.util.Map;
 @RequestMapping("/sys/reserve")
 public class ReserveController {
     @Autowired
+    private ActivityService activityService;
+    @Autowired
     private ReserveService reserveService;
     @Autowired
     private ActivitybService activitybService;
     @Autowired
     private ReserveHandleService reserveHandleService;
+    @Autowired
+    private EmailLogService emailLogService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
 
     @ApiOperation(value = "预定场地或资源")
@@ -68,10 +74,10 @@ public class ReserveController {
     /*
         预定场和活动
     */
-    @ApiOperation(value = "场地和活动预定")
+    @ApiOperation(value = "场地和活动B预定")
     @Transactional
-    @PutMapping("/placeAndActivityReserve")
-    public RespBean placeAndActivityReserve(@RequestBody Map map){
+    @PutMapping("/placeAndActivityBReserve")
+    public RespBean placeAndActivityBReserve(@RequestBody Map map){
         Reserve reserve;
         Activityb activityb;
         LocalDateTime createTime = LocalDateTime.now();
@@ -91,6 +97,49 @@ public class ReserveController {
             mapResult.put("reserve",reserve);
             mapResult.put("activityb",activityb);
             if(result&&result2){
+                return RespBean.success("场地预约成功",mapResult);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+        return RespBean.error("场地预约失败");
+    }
+    @PostMapping("/placeAndActivityReserve")
+    public RespBean placeAndActivityReserve(@RequestBody Map map){
+        Reserve reserve;
+        Activity activity;
+        LocalDateTime createTime = LocalDateTime.now();
+        try {
+            reserve = EntityUtil.mapToBean(map, Reserve.class);
+            activity = EntityUtil.mapToBean(map,Activity.class);
+            reserve.setCreateTime(createTime);  //创建时间
+            reserve.setReserveStatus(35);      //预约状态   35为预约中
+            reserve.setReserveTarget(45);       //预约目标  45为场地
+            reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
+            reserve.setIsCancel(0);             //是否删除（逻辑删除）  0为否
+            Boolean result = reserveService.save(reserve);
+            activity.setReserveId(reserve.getId());
+            Boolean result2 = activityService.save(activity);
+            Map mapResult = new HashMap();
+            mapResult.put("reserve",reserve);
+            mapResult.put("activity",activity);
+            if(result&&result2){
+                EmailLog emailLog = new EmailLog();
+                emailLog.setReserveId(reserve.getId());
+                emailLog.setUserId(new Long((Integer)map.get("userId")));
+                emailLog.setStatus(0);
+                emailLog.setRoutingKey(EmailConstants.EMAIL_ROUTING_KEY_NAME);
+                emailLog.setExchange(EmailConstants.EMAIL_EXCHANGE_NAME);
+                emailLog.setCount(EmailConstants.MAX_TRY_COUNT);
+                emailLog.setTryTime(LocalDateTime.now().plusMinutes(EmailConstants.MAX_TRY_COUNT));
+                emailLog.setCreateTime(LocalDateTime.now());
+                emailLog.setUpdateTime(LocalDateTime.now());
+                emailLogService.save(emailLog); //消息入库
+                //rabbitmq发送消息
+                rabbitTemplate.convertAndSend(EmailConstants.EMAIL_EXCHANGE_NAME,EmailConstants.EMAIL_ROUTING_KEY_NAME,
+                reserve,new CorrelationData(String.valueOf(emailLog.getEmailLogId())));
+
                 return RespBean.success("场地预约成功",mapResult);
             }
         } catch (Exception e) {

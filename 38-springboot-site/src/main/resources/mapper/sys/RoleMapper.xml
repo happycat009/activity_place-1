@@ -8,7 +8,7 @@
         <result column="name" property="name" />
         <result column="disabled" property="disabled" />
         <result column="del_flag" property="delFlag" />
-        <result column="desc" property="describe" />
+        <result column="desc" property="desc" />
     </resultMap>
 
     <select id="selectRoleByUserId" resultType="com.huangjiabin.site.sys.model.Role">

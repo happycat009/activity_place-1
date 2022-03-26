@@ -16,6 +16,8 @@
         <result column="credit" property="credit" />
         <result column="del_flag" property="delFlag" />
         <result column="old_password" property="oldPassword" />
+        <result column="email" property="email" />
+        <result column="photo" property="photo" />
     </resultMap>
 
 </mapper>
