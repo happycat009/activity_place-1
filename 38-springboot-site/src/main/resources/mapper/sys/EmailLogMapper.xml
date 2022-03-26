@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.huangjiabin.site.sys.model.EmailLog">
-        <id column="mail_log_id" property="emailLogId" />
+        <id column="email_log_id" property="emailLogId" />
         <result column="user_id" property="userId" />
         <result column="reserve_id" property="reserveId" />
         <result column="status" property="status" />

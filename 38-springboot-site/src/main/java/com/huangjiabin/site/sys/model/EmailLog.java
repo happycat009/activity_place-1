@@ -27,7 +27,7 @@ public class EmailLog implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "消息id")
-    @TableId(value = "emailLogId", type = IdType.ASSIGN_ID)
+    @TableId(value = "email_log_id", type = IdType.ASSIGN_ID)
     private Long emailLogId;
 
     @ApiModelProperty(value = "接收用户id")
