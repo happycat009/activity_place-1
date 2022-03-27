@@ -1,6 +1,8 @@
 package com.huangjiabin.site.sys.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huangjiabin.site.sys.model.*;
@@ -158,7 +160,7 @@ public class UserController {
         }
         return RespBean.error("更改失败");
     }
-    @ApiOperation(value = "根据用户id删除用户信息")
+    @ApiOperation(value = "根据用户id删除用户信息，物理删除不可恢复")
     @DeleteMapping("/deleteUserById/{id}")
     public RespBean deleteUserById(@PathVariable("id") Long id){
         boolean result = userService.removeById(id);
@@ -167,14 +169,65 @@ public class UserController {
         }
         return RespBean.error("删除失败");
     }
-    @ApiOperation(value = "根据用户id获取用户信息")
-    @GetMapping("/getUserById/{id}")
+    @ApiOperation(value = "根据用户id获取用户信息，未被删除")
+    @GetMapping("/getUserByIdP/{id}")
     public RespBean getUserById(@PathVariable("id") Long id){
-        User user = userService.getById(id);
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        qw.eq("del_flag",0);
+        qw.eq("id",id);
+        User user = userService.getOne(qw);
         if(user!=null){
             return RespBean.success("查询成功",user);
         }
         return RespBean.error("查询失败");
+    }
+    @ApiOperation(value = "根据用户id删除用户信息，逻辑删除可恢复")
+    @DeleteMapping("/deleteUserByIdLogic/{id}")
+    public RespBean deleteUserByIdLogic(@PathVariable("id") Long id){
+        UpdateWrapper<User> uw = new UpdateWrapper<>();
+        uw.set("del_flag",1);
+        uw.eq("id",id);
+        boolean success = userService.update(uw);
+        if(success){
+            return RespBean.success("删除成功");
+        }
+        return RespBean.error("删除失败");
+    }
+    @ApiOperation(value = "根据用户id恢复删除用户")
+    @PutMapping("/recoveryUserById/{id}")
+    public RespBean recoveryUserById(@PathVariable("id") Long id){
+        UpdateWrapper<User> uw = new UpdateWrapper<>();
+        uw.set("del_flag",0);
+        uw.eq("id",id);
+        boolean success = userService.update(uw);
+        if(success){
+            return RespBean.success("恢复成功");
+        }
+        return RespBean.error("恢复失败");
+    }
+    @ApiOperation(value = "根据用户id禁用用户")
+    @PutMapping("/updateUserDisabledById/{id}")
+    public RespBean updateUserDisableById(@PathVariable("id") Long id){
+        UpdateWrapper<User> uw = new UpdateWrapper<>();
+        uw.set("disabled",1);
+        uw.eq("id",id);
+        boolean success = userService.update(uw);
+        if(success){
+            return RespBean.success("禁用成功");
+        }
+        return RespBean.error("禁用失败");
+    }
+    @ApiOperation(value = "根据用户id激活用户")
+    @PutMapping("/updateUserEnabledById/{id}")
+    public RespBean updateUserEnabledById(@PathVariable("id") Long id){
+        UpdateWrapper<User> uw = new UpdateWrapper<>();
+        uw.set("disabled",0);
+        uw.eq("id",id);
+        boolean success = userService.update(uw);
+        if(success){
+            return RespBean.success("激活成功");
+        }
+        return RespBean.error("激活失败");
     }
 }
 
