@@ -158,7 +158,7 @@ public class UserController {
         }
         return RespBean.error("更改失败");
     }
-    @ApiOperation(value = "根据id删除用户信息")
+    @ApiOperation(value = "根据用户id删除用户信息")
     @DeleteMapping("/deleteUserById/{id}")
     public RespBean deleteUserById(@PathVariable("id") Long id){
         boolean result = userService.removeById(id);
@@ -166,6 +166,15 @@ public class UserController {
             return RespBean.success("删除成功");
         }
         return RespBean.error("删除失败");
+    }
+    @ApiOperation(value = "根据用户id获取用户信息")
+    @GetMapping("/getUserById/{id}")
+    public RespBean getUserById(@PathVariable("id") Long id){
+        User user = userService.getById(id);
+        if(user!=null){
+            return RespBean.success("查询成功",user);
+        }
+        return RespBean.error("查询失败");
     }
 }
 
