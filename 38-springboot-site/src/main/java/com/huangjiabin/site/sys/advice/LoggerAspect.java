@@ -33,9 +33,7 @@ public class LoggerAspect {
         log.info("--------前置通知日志输出开始--------");
         //开始时间
         startTime.set(System.currentTimeMillis());
-        if(
-                RequestContextHolder.getRequestAttributes()!=null
-        ){
+        if(RequestContextHolder.getRequestAttributes()!=null){
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
             //获取请求url
@@ -53,22 +51,26 @@ public class LoggerAspect {
     //后置通知
     @AfterReturning(value = "logPointcut()", returning = "result")
     public void AfterReturningLogger(Object result) {
-        log.info("--------后置通知日志输出开始--------");
-        //返回值
-        log.info("Result: " + result.toString());
-        //程序运时间(毫秒)
-        log.info("用时: " + (System.currentTimeMillis() - startTime.get()) + " ms");
+            log.info("--------后置通知日志输出开始--------");
+            //返回值
+            if (result!=null) {
+                log.info("Result: " + result.toString());
+            }
+            //程序运时间(毫秒)
+            if(startTime.get()!=null){
+                log.info("用时: " + (System.currentTimeMillis() - startTime.get()) + " ms");
+            }
 
-        startTime.remove();
-        log.info("--------后置通知日志输出完毕--------");
+            startTime.remove();
+            log.info("--------后置通知日志输出完毕--------");
     }
 
     //异常通知
-    @AfterThrowing(value = "logPointcut()")
-    public void ThrowingLogger() {
-        log.error("--------异常通知日志输出--------");
-        log.error("ErrorMessage：请根据异常产生时间前往异常日志查看相关信息");
-    }
+//    @AfterThrowing(value = "logPointcut()")
+//    public void ThrowingLogger() {
+//        log.error("--------异常通知日志输出--------");
+//        log.error("ErrorMessage：请根据异常产生时间前往异常日志查看相关信息");
+//    }
 
 }
 

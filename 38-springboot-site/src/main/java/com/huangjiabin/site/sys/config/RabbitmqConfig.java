@@ -27,13 +27,14 @@ public class RabbitmqConfig {
         //ack:确认结果
         //cause：失败原因
         rabbitTemplate.setConfirmCallback((data, ack, cause) -> {
-            String msgid = data.getId();
+            System.out.println(data);
+            String emailLogId = data.getId();
             if(ack){
-                log.info("{}=========>消息发送成功",msgid);
-                emailLogService.update(new UpdateWrapper<EmailLog>().set("status",1).eq("msdid",msgid));
+                log.info("{}=========>消息发送成功",emailLogId);
+                emailLogService.update(new UpdateWrapper<EmailLog>().set("status",1).eq("email_log_id",emailLogId));
 
             }else {
-                log.info("{}=========>消息发送失败",msgid);
+                log.info("{}=========>消息发送失败",emailLogId);
             }
         });
         rabbitTemplate.setReturnsCallback(new RabbitTemplate.ReturnsCallback() {

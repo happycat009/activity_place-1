@@ -132,7 +132,7 @@ public class ReserveController {
                 emailLog.setRoutingKey(EmailConstants.EMAIL_ROUTING_KEY_NAME);
                 emailLog.setExchange(EmailConstants.EMAIL_EXCHANGE_NAME);
                 emailLog.setCount(EmailConstants.MAX_TRY_COUNT);
-                emailLog.setTryTime(LocalDateTime.now().plusMinutes(EmailConstants.MAX_TRY_COUNT));
+                emailLog.setTryTime(LocalDateTime.now().plusMinutes(EmailConstants.MSG_TIMEOUT));
                 emailLog.setCreateTime(LocalDateTime.now());
                 emailLog.setUpdateTime(LocalDateTime.now());
                 emailLogService.save(emailLog); //消息入库

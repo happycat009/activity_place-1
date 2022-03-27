@@ -6,8 +6,11 @@ import com.huangjiabin.site.sys.model.User;
 import com.huangjiabin.site.sys.service.AuthorityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -22,13 +25,20 @@ import java.util.List;
  */
 @Service
 public class AuthorityServiceImpl extends ServiceImpl<AuthorityMapper, Authority> implements AuthorityService {
-
+    @Autowired
+    RedisTemplate redisTemplate;
     @Resource
-    AuthorityMapper authorityMapper;
+    private AuthorityMapper authorityMapper;
     @Override
     public List<Authority> getAuthorityByUserId() {
        Long userId = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-       List<Authority> authorities = authorityMapper.getAuthorityByUserId(userId);
+       ValueOperations<String,Object> valueOperations=redisTemplate.opsForValue();
+        List<Authority> authorities = (List<Authority>)valueOperations.get("authority_" + userId);
+        if(CollectionUtils.isEmpty(authorities)){
+        authorities = authorityMapper.getAuthorityByUserId(userId);
+            //将数据存到redis
+            valueOperations.set("authority_"+userId,authorities);
+        }
        return authorities;
     }
 

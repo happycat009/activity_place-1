@@ -2,13 +2,11 @@ package com.huangjiabin.site.sys.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.huangjiabin.site.sys.model.DictList;
 import com.huangjiabin.site.sys.model.RespBean;
 import com.huangjiabin.site.sys.model.Student;
 import com.huangjiabin.site.sys.model.User;
-import com.huangjiabin.site.sys.service.LoginService;
-import com.huangjiabin.site.sys.service.RoleService;
-import com.huangjiabin.site.sys.service.StudentService;
-import com.huangjiabin.site.sys.service.UserService;
+import com.huangjiabin.site.sys.service.*;
 import com.huangjiabin.site.sys.util.IpUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,6 +36,8 @@ public class LoginController {
     private RoleService roleService;
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private DictListService dictListService;
 
     @ApiOperation(value = "登录之返回token")
     @PostMapping("/login/{username}/{password}/{code}")
@@ -115,5 +116,12 @@ public class LoginController {
         }
         //-------------------生成验证end------------------
     }
+    @ApiOperation(value = "获取字典数据")
+    @GetMapping("/getDict")
+    public RespBean getDict(){
+        List<DictList> allDictListWithDate = dictListService.getAllDictListWithDate();
+        return RespBean.success("字典加载成功",allDictListWithDate);
+    }
+
 
 }

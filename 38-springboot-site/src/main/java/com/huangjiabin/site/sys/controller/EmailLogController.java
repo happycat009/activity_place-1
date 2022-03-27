@@ -47,8 +47,6 @@ public class EmailLogController {
         message.setFrom(username);
         //要发送的qq邮箱(收件人地址)
         message.setTo(user.getEmail());
-        //邮件主题
-        String code= CommonUtil.getRandomNumCode(4);
         message.setSubject("校园公共活动场所管理系统！！！");
         //邮件正文
         message.setText("您在"+reserve.getCreateTime()+"预定的"+(reserve.getReserveTarget()==49?"场地":"资源")+"预定成功");//！！！
