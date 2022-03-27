@@ -35,11 +35,12 @@ public class ActivitybController {
     @GetMapping("/getActivityBPage/{current}/{size}")
     public RespBean getActivityBPage (@PathVariable("size") Long size, @PathVariable("current") Long current){
         QueryWrapper<Activityb> qw = new QueryWrapper<>();
+        qw.eq("isDelete",0);
         IPage page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = activitybService.pageMaps(page);
+        IPage<Map<String,Object>> result = activitybService.pageMaps(page,qw);
         return RespBean.success("true",result);
     }
 
