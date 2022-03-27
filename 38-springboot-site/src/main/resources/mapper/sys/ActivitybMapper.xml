@@ -4,27 +4,29 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.huangjiabin.site.sys.model.Activityb">
-        <result column="activity_id" property="activityId" />
+        <result column="id" property="id" />
         <result column="user_id" property="userId" />
-        <result column="activity_title" property="activityTitle" />
-        <result column="activity_lable" property="activityLable" />
-        <result column="activity_type" property="activityType" />
-        <result column="activity_locale" property="activityLocale" />
-        <result column="activity_content" property="activityContent" />
-        <result column="activity_img" property="activityImg" />
-        <result column="createtime" property="createtime" />
-        <result column="activity_starttime" property="activityStarttime" />
-        <result column="activity_endtime" property="activityEndtime" />
-        <result column="updatetime" property="updatetime" />
-        <result column="activity_favour_num" property="activityFavourNum" />
-        <result column="activity_num" property="activityNum" />
-        <result column="activity_read_num" property="activityReadNum" />
-        <result column="activity_state" property="activityState" />
-        <result column="activity_istop" property="activityIstop" />
-        <result column="ispublic" property="ispublic" />
-        <result column="activity_impose" property="activityImpose" />
-        <result column="admin" property="admin" />
         <result column="reserve_id" property="reserveId" />
+        <result column="place_id" property="placeId" />
+        <result column="title" property="title" />
+        <result column="label" property="label" />
+        <result column="type" property="type" />
+        <result column="locale" property="locale" />
+        <result column="content" property="content" />
+        <result column="img" property="img" />
+        <result column="create_time" property="createTime" />
+        <result column="start_time" property="start_time" />
+        <result column="end_time" property="end_time" />
+        <result column="update_time" property="update_time" />
+        <result column="favour_num" property="favourNum" />
+        <result column="join_num" property="joinNum" />
+        <result column="need_num" property="needNum" />
+        <result column="read_num" property="readNum" />
+        <result column="is_stop" property="isStop" />
+        <result column="is_top" property="isTop" />
+        <result column="is_public" property="isPublic" />
+        <result column="impose" property="impose" />
+        <result column="is_delete" property="isDelete" />
     </resultMap>
 
 </mapper>

@@ -27,48 +27,54 @@ public class Activityb implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "activity_id", type = IdType.ASSIGN_ID)
-    private Long activityId;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private Long id;
+
+    private Long reserveId;
 
     private Long userId;
 
-    private String activityTitle;
+    private Long placeId;
 
-    private String activityLable;
+    private String title;
 
-    private String activityType;
+    private String label;
 
-    private String activityLocale;
+    private String type;
 
-    private String activityContent;
+    private String locale;
 
-    private String activityImg;
+    private String content;
 
-    private LocalDateTime createtime;
+    private String img;
 
-    private LocalDateTime activityStarttime;
+    private LocalDateTime createTime;
 
-    private LocalDateTime activityEndtime;
+    private LocalDateTime startTime;
 
-    private LocalDateTime updatetime;
+    private LocalDateTime endTime;
 
-    private Integer activityFavourNum;
+    private LocalDateTime updateTime;
 
-    private Integer activityNum;
+    private Integer favourNum;
 
-    private Integer activityReadNum;
+    private Integer joinNum;
 
-    private Integer activityState;
+    private Integer needNum;
 
-    private Integer activityIstop;
+    private Integer readNum;
 
-    private Integer ispublic;
 
-    private String activityImpose;
+    private Integer isStop;
 
-    private Long admin;
+    private Integer isDelete;
 
-    private Long reserveId;
+    private Integer isTop;
+
+    private Integer isPublic;
+
+    private Integer impose;
+
 
 
 }

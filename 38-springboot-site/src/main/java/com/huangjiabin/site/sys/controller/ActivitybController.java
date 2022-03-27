@@ -34,6 +34,7 @@ public class ActivitybController {
     @ApiOperation(value = "分页查活动信息")
     @GetMapping("/getActivityBPage/{current}/{size}")
     public RespBean getActivityBPage (@PathVariable("size") Long size, @PathVariable("current") Long current){
+        QueryWrapper<Activityb> qw = new QueryWrapper<>();
         IPage page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码

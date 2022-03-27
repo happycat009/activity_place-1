@@ -90,7 +90,7 @@ public class ReserveController {
             reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
             reserve.setIsCancel(0);             //是否删除（逻辑删除）  0为否
             Boolean result = reserveService.save(reserve);
-            activityb.setCreatetime(createTime);
+            activityb.setCreateTime(createTime);
             activityb.setReserveId(reserve.getId());
             Boolean result2 = activitybService.save(activityb);
             Map mapResult = new HashMap();
