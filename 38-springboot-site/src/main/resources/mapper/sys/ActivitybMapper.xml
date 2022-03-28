@@ -32,7 +32,7 @@
     <select id="selectActivityBByUserId" resultMap="BaseResultMap">
         select ab.*
         from sys_activity_b ab,sys_user_activity ua
-        where ab.id=ua.activity_id and ua.user_id = #{userId}
+        where ab.id=ua.activity_id and ua.user_id = #{userId} and ua.is_out != 1
     </select>
 
 </mapper>

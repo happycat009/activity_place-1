@@ -193,6 +193,8 @@ public class ActivityBController {
             List<ActivityB> activityBList = activityBService.selectActivityBByUserId(userId);
             if(!CollectionUtils.isEmpty(activityBList)){
                 return RespBean.success("查询成功",activityBList);
+            }else {
+                return RespBean.success("用户没有参加的活动");
             }
         } catch (Exception e) {
             e.printStackTrace();
