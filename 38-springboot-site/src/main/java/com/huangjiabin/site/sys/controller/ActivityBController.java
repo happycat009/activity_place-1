@@ -9,11 +9,13 @@ import com.huangjiabin.site.sys.model.*;
 import com.huangjiabin.site.sys.service.ActivityBService;
 import com.huangjiabin.site.sys.service.HandleService;
 import com.huangjiabin.site.sys.service.UserActivityService;
+import com.huangjiabin.site.sys.service.UserService;
 import com.huangjiabin.site.sys.util.EntityUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -34,6 +36,8 @@ public class ActivityBController {
     private HandleService handleService;
     @Autowired
     private UserActivityService userActivityService;
+    @Autowired
+    private UserService userService;
 
     @ApiOperation(value = "分页查活动信息，逻辑删除查的到")
     @GetMapping("/getActivityBPageT/{current}/{size}")
@@ -148,6 +152,37 @@ public class ActivityBController {
             e.printStackTrace();
         }
         return RespBean.error("退出失败");
+    }
+    @ApiOperation(value = "删除活动B逻辑删除")
+    @PutMapping("/deleteActivityBP/{id}")
+    public RespBean deleteActivityBP (@PathVariable("id")Long id){
+        Boolean result;
+        try {
+            UpdateWrapper<ActivityB> uw = new UpdateWrapper<>();
+            uw.set("is_delete",1);
+            uw.eq("id",id);
+            result = activityBService.update(uw);
+            if(result){
+                return RespBean.success("删除成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("删除失败");
+    }
+    @ApiOperation(value = "删除活动B物理删除")
+    @PutMapping("/deleteActivityBT/{id}")
+    public RespBean deleteActivityBT (@PathVariable("id")Long id){
+        Boolean result;
+        try {
+            result = activityBService.removeById(id);
+            if(result){
+                return RespBean.success("删除成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("删除失败");
     }
 
 }
