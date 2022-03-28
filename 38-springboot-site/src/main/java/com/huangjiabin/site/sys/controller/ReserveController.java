@@ -125,22 +125,10 @@ public class ReserveController {
             mapResult.put("reserve",reserve);
             mapResult.put("activity",activity);
             if(result&&result2){
-                EmailLog emailLog = new EmailLog();
-                emailLog.setReserveId(reserve.getId());
-                emailLog.setUserId(new Long((Integer)map.get("userId")));
-                emailLog.setStatus(0);
-                emailLog.setRoutingKey(EmailConstants.EMAIL_ROUTING_KEY_NAME);
-                emailLog.setExchange(EmailConstants.EMAIL_EXCHANGE_NAME);
-                emailLog.setCount(EmailConstants.MAX_TRY_COUNT);
-                emailLog.setTryTime(LocalDateTime.now().plusMinutes(EmailConstants.MSG_TIMEOUT));
-                emailLog.setCreateTime(LocalDateTime.now());
-                emailLog.setUpdateTime(LocalDateTime.now());
-                emailLogService.save(emailLog); //消息入库
-                //rabbitmq发送消息
-                rabbitTemplate.convertAndSend(EmailConstants.EMAIL_EXCHANGE_NAME,EmailConstants.EMAIL_ROUTING_KEY_NAME,
-                reserve,new CorrelationData(String.valueOf(emailLog.getEmailLogId())));
-
-                return RespBean.success("场地预约成功",mapResult);
+                Boolean result3 = emailLogService.sendEmail(reserve);
+                if(result3){
+                    return RespBean.success("场地预约成功",mapResult);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,19 +2,19 @@ package com.huangjiabin.site.sys.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.huangjiabin.site.sys.model.ActivityB;
-import com.huangjiabin.site.sys.model.RespBean;
+import com.huangjiabin.site.sys.model.*;
 import com.huangjiabin.site.sys.service.ActivityBService;
+import com.huangjiabin.site.sys.service.HandleService;
+import com.huangjiabin.site.sys.service.UserActivityService;
+import com.huangjiabin.site.sys.util.EntityUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
-
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -30,6 +30,10 @@ import java.util.Map;
 public class ActivityBController {
     @Autowired
     private ActivityBService activityBService;
+    @Autowired
+    private HandleService handleService;
+    @Autowired
+    private UserActivityService userActivityService;
 
     @ApiOperation(value = "分页查活动信息，逻辑删除查的到")
     @GetMapping("/getActivityBPageT/{current}/{size}")
@@ -69,6 +73,68 @@ public class ActivityBController {
         activityBQueryWrapper.eq("reserve_id",reserveId);
         ActivityB activityB = activityBService.getOne(activityBQueryWrapper);
         return RespBean.success("true",activityB);
+    }
+    @ApiOperation(value = "停止活动B")
+    @PutMapping("/stopActivityB")
+    public RespBean stopActivityB (@RequestBody Map map){
+        Boolean result = false;
+        Boolean result2 = false;
+        Handle handle=null;
+        LocalDateTime createTime = LocalDateTime.now();
+        try {
+            UpdateWrapper<ActivityB> uw = new UpdateWrapper<>();
+            uw.set("is_stop",1);
+            uw.eq("id",map.get("targetId"));
+            result = activityBService.update(uw);
+            if(result){
+                handle=EntityUtil.mapToBean(map,Handle.class);
+                handle.setHandle(47);
+                handle.setTableName("sys_activity_b");
+                handle.setTime(createTime);
+                handle.setIsEmail(0);
+                handle.setIsEmailSuccess(0);
+                result2 = handleService.save(handle);
+            }
+            if(result2){
+                return RespBean.success("取消成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("取消失败");
+    }
+    @ApiOperation(value = "参加活动B")
+    @PutMapping("/joinActivityB")
+    public RespBean joinActivityB (@RequestBody Map map){
+        Boolean result;
+        Boolean result2=false;
+        LocalDateTime joinTime = LocalDateTime.now();
+        UserActivity userActivity;
+        try {
+            userActivity = EntityUtil.mapToBean(map,UserActivity.class);
+            userActivity.setJoinTime(joinTime);
+            userActivity.setIsOut(0);
+            QueryWrapper<UserActivity> qw = new QueryWrapper<>();
+            qw.eq("user_id",userActivity.getUserId());
+            qw.eq("activity_id",userActivity.getActivityId());
+            UserActivity one = userActivityService.getOne(qw);
+            if(one!=null){
+                return RespBean.error("重复参加");
+            }
+            result = userActivityService.save(userActivity);
+            if(result){
+                UpdateWrapper<ActivityB> uw = new UpdateWrapper<>();
+                uw.setSql("join_num=join_num+1");
+                uw.eq("id",userActivity.getActivityId());
+                result2 = activityBService.update(uw);
+            }
+            if(result2){
+                return RespBean.success("参加成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("参加失败");
     }
 
 }
