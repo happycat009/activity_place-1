@@ -9,6 +9,7 @@
         <result column="is_out" property="isOut" />
         <result column="join_time" property="joinTime" />
         <result column="out_time" property="outTime" />
+        <result column="is_attend" property="isAttend" />
     </resultMap>
 
 </mapper>

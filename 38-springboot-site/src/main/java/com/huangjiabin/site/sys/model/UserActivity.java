@@ -41,5 +41,7 @@ public class UserActivity implements Serializable {
     @ApiModelProperty(value = "退出时间")
     private LocalDateTime outTime;
 
+    @ApiModelProperty(value = "是否参加")
+    private Integer isAttend;
 
 }

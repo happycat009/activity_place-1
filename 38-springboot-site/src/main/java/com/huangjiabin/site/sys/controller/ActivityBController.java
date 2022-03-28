@@ -112,24 +112,45 @@ public class ActivityBController {
     @ApiOperation(value = "参加活动B")
     @PutMapping("/joinActivityB")
     public RespBean joinActivityB (@RequestBody Map map){
-        Boolean result;
-        Boolean result2=false;
         LocalDateTime joinTime = LocalDateTime.now();
         UserActivity userActivity;
         try {
-            userActivity = EntityUtil.mapToBean(map,UserActivity.class);
-            userActivity.setJoinTime(joinTime);
-            userActivity.setIsOut(0);
-            result = userActivityService.save(userActivity);
-            if(result){
-                UpdateWrapper<ActivityB> uw = new UpdateWrapper<>();
-                uw.setSql("join_num=join_num+1");
-                uw.eq("id",userActivity.getActivityId());
-                result2 = activityBService.update(uw);
+            //判断是否是退出活动
+            QueryWrapper<UserActivity> qw = new QueryWrapper<>();
+            qw.eq("user_id",map.get("userId"));
+            qw.eq("activity_id",map.get("activityId"));
+            qw.eq("is_out",1);
+            userActivity = userActivityService.getOne(qw);
+            //是退出活动修改退出
+            if(userActivity!=null){
+                UpdateWrapper<UserActivity> uwUserActivity = new UpdateWrapper<>();
+                uwUserActivity.set("is_out",0);
+                uwUserActivity.eq("user_id",map.get("userId"));
+                uwUserActivity.eq("activity_id",map.get("activityId"));
+                boolean update = userActivityService.update(uwUserActivity);
+                if(update){
+                    UpdateWrapper<ActivityB> uwActivityB = new UpdateWrapper<>();
+                    uwActivityB.setSql("join_num=join_num+1");
+                    uwActivityB.eq("id",userActivity.getActivityId());
+                    activityBService.update(uwActivityB);
+                    return RespBean.success("重新参加成功");
+                }
+
+            }else {
+                //不是退出的活动，参加，或者已经参加了就参加失败
+                userActivity = EntityUtil.mapToBean(map,UserActivity.class);
+                userActivity.setJoinTime(joinTime);
+                userActivity.setIsOut(0);
+                boolean save = userActivityService.save(userActivity);
+                if(save){
+                    UpdateWrapper<ActivityB> uw = new UpdateWrapper<>();
+                    uw.setSql("join_num=join_num+1");
+                    uw.eq("id",userActivity.getActivityId());
+                    activityBService.update(uw);
+                    return RespBean.success("参加成功");
+                }
             }
-            if(result2){
-                return RespBean.success("参加成功");
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,7 +159,6 @@ public class ActivityBController {
     @ApiOperation(value = "退出活动B")
     @PutMapping("/outActivityB")
     public RespBean outActivityB (@RequestBody Map map){
-        Boolean result;
         LocalDateTime outTime = LocalDateTime.now();
         try {
            UpdateWrapper<UserActivity> uw = new UpdateWrapper<>();
@@ -146,8 +166,13 @@ public class ActivityBController {
            uw.set("is_out",1);
            uw.eq("user_id",map.get("userId"));
            uw.eq("activity_id",map.get("activityId"));
-           result = userActivityService.update(uw);
-           if(result){
+           boolean update = userActivityService.update(uw);
+           //更改成功则退出成功
+           if(update){
+               UpdateWrapper<ActivityB> uw2= new UpdateWrapper<>();
+               uw2.setSql("join_num=join_num-1");
+               uw2.eq("id",map.get("activityId"));
+               activityBService.update(uw2);
                return RespBean.success("退出成功");
            }
         } catch (Exception e) {
