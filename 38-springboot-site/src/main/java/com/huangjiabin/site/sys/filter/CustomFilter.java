@@ -28,7 +28,7 @@ public class CustomFilter implements FilterInvocationSecurityMetadataSource {
         //获取请求url
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         //通过authorityService匹配permission表中url拿到api访问所需角色也就是菜单角色，我没设置
-        List<Authority> authoritys = authorityService.getAuthorityByRole();
+        List<Authority> authoritys = authorityService.getAuthorityWithRole();
         for(Authority authority :authoritys){
             System.out.println("authority==="+authority);
             //判断请求url是否与权限匹配

@@ -50,7 +50,7 @@
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
 
-    <el-form-item label="备注"  prop="desc">
+    <el-form-item label="备注"  prop="remark">
       <el-input  type="textarea" v-model="sizeForm.remark"></el-input>
     </el-form-item>
     <el-form-item  size="large">

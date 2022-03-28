@@ -8,13 +8,15 @@
         <result column="name" property="name" />
         <result column="disabled" property="disabled" />
         <result column="del_flag" property="delFlag" />
-        <result column="desc" property="describe" />
+        <result column="remark" property="remark" />
     </resultMap>
     <resultMap id="AuthorityWithRole" type="com.huangjiabin.site.sys.model.Authority" extends="BaseResultMap">
         <collection property="roles" ofType="com.huangjiabin.site.sys.model.Role">
             <id column="rid" property="id"></id>
             <result column="rname" property="name" />
-            <result column="rdesc" property="describe" />
+            <result column="rremark" property="remark" />
+            <result column="rdisabled" property="disabled" />
+            <result column="rdelFlag" property="delFlag" />
         </collection>
     </resultMap>
 
@@ -41,9 +43,12 @@
              a.`name`,
              a.disabled,
              a.del_flag,
+             a.remark,
              r.id as rid,
              r.`name` as rname,
-             r.`desc` as rdecs
+             r.`remark` as rremark,
+             r.disabled as rdisabled,
+             r.del_flag as rdelFlag
         FROM
             sys_authority a,
             sys_role r,

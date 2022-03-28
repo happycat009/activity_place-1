@@ -26,4 +26,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     public List<Role> selectRoleByUserId(Long id) {
          return roleMapper.selectRoleByUserId(id);
     }
+
+    @Override
+    public List<Role> selectRoleWithAuthority() {
+        return roleMapper.selectRoleWithAuthority();
+    }
 }

@@ -41,7 +41,7 @@ public class Authority implements Serializable {
     private Integer delFlag;
 
     @ApiModelProperty(value = "备注")
-    private String describe;
+    private String remark;
 
     @ApiModelProperty(value = "角色列表")
     @TableField(exist = false)

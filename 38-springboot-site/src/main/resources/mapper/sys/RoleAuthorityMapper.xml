@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.huangjiabin.site.sys.model.RoleAuthority">
         <id column="role_id" property="roleId" />
-        <result column="permission_id" property="permissionId" />
+        <result column="authority_id" property="authorityId" />
     </resultMap>
 
 </mapper>

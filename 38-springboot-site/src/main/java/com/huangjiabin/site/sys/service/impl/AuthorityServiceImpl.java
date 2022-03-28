@@ -43,8 +43,10 @@ public class AuthorityServiceImpl extends ServiceImpl<AuthorityMapper, Authority
     }
 
     @Override
-    public List<Authority> getAuthorityByRole() {
+    public List<Authority> getAuthorityWithRole() {
 
         return authorityMapper.getAuthorityWithRole();
     }
+
+
 }

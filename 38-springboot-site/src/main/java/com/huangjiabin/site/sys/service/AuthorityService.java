@@ -17,5 +17,6 @@ public interface AuthorityService extends IService<Authority> {
 
     List<Authority> getAuthorityByUserId();
 
-    List<Authority> getAuthorityByRole();
+    List<Authority> getAuthorityWithRole();
+
 }

@@ -1,9 +1,12 @@
 package com.huangjiabin.site.sys.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,7 +41,11 @@ public class Role implements Serializable {
     private Integer delFlag;
 
     @ApiModelProperty(value = "角色备注")
-    private String desc;
+    private String remark;
+
+    @ApiModelProperty(value="角色拥有的权限")
+    @TableField(exist = false)
+    private List<Authority> authoritys;
 
 
 }
