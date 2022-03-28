@@ -114,13 +114,6 @@ public class ActivityBController {
             userActivity = EntityUtil.mapToBean(map,UserActivity.class);
             userActivity.setJoinTime(joinTime);
             userActivity.setIsOut(0);
-            QueryWrapper<UserActivity> qw = new QueryWrapper<>();
-            qw.eq("user_id",userActivity.getUserId());
-            qw.eq("activity_id",userActivity.getActivityId());
-            UserActivity one = userActivityService.getOne(qw);
-            if(one!=null){
-                return RespBean.error("重复参加");
-            }
             result = userActivityService.save(userActivity);
             if(result){
                 UpdateWrapper<ActivityB> uw = new UpdateWrapper<>();
