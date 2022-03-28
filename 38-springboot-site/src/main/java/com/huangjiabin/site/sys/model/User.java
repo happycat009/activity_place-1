@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -36,6 +37,7 @@ public class User implements Serializable, UserDetails {
 
     @ApiModelProperty(value = "用户id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @ApiModelProperty(value = "账号")

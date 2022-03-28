@@ -52,6 +52,8 @@ public class EntityUtil {
                 if(field.getType().getSimpleName().equals("Long")){
                     if(map.get(field.getName()) instanceof Integer){
                         field.set(object,((Integer)map.get(field.getName())).longValue());
+                    }else if(map.get(field.getName()) instanceof String){
+                        field.set(object,Long.valueOf((String)map.get(field.getName())).longValue());
                     }else {
                         field.set(object,map.get(field.getName()));
                     }

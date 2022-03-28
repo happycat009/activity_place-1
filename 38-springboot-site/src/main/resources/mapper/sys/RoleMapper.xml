@@ -30,7 +30,7 @@
 
     <select id="selectRoleWithAuthority" resultMap="RoleWithAuthority">
         select r.id,r.name,r.disabled,r.del_flag,r.remark,
-        a.id as id,a.name as aname,a.remark as aremark,a.disabled as adisabled,a.del_flag as adelFlag
+        a.id as aid,a.name as aname,a.remark as aremark,a.disabled as adisabled,a.del_flag as adelFlag
         from sys_role as r
         left join sys_role_authority as ur
         on r.id=ur.role_id
