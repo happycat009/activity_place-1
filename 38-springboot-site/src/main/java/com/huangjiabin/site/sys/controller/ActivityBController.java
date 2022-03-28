@@ -129,6 +129,26 @@ public class ActivityBController {
         }
         return RespBean.error("参加失败");
     }
+    @ApiOperation(value = "退出活动B")
+    @PutMapping("/outActivityB")
+    public RespBean outActivityB (@RequestBody Map map){
+        Boolean result;
+        LocalDateTime outTime = LocalDateTime.now();
+        try {
+           UpdateWrapper<UserActivity> uw = new UpdateWrapper<>();
+           uw.set("out_time",outTime);
+           uw.set("is_out",1);
+           uw.eq("user_id",map.get("userId"));
+           uw.eq("activity_id",map.get("activityId"));
+           result = userActivityService.update(uw);
+           if(result){
+               return RespBean.success("退出成功");
+           }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("退出失败");
+    }
 
 }
 
