@@ -13,10 +13,12 @@ import com.huangjiabin.site.sys.service.UserService;
 import com.huangjiabin.site.sys.util.EntityUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -154,7 +156,7 @@ public class ActivityBController {
         return RespBean.error("退出失败");
     }
     @ApiOperation(value = "删除活动B逻辑删除")
-    @PutMapping("/deleteActivityBP/{id}")
+    @DeleteMapping("/deleteActivityBP/{id}")
     public RespBean deleteActivityBP (@PathVariable("id")Long id){
         Boolean result;
         try {
@@ -171,7 +173,7 @@ public class ActivityBController {
         return RespBean.error("删除失败");
     }
     @ApiOperation(value = "删除活动B物理删除")
-    @PutMapping("/deleteActivityBT/{id}")
+    @DeleteMapping("/deleteActivityBT/{id}")
     public RespBean deleteActivityBT (@PathVariable("id")Long id){
         Boolean result;
         try {
@@ -183,6 +185,19 @@ public class ActivityBController {
             e.printStackTrace();
         }
         return RespBean.error("删除失败");
+    }
+    @ApiOperation(value = "查找用户参加的活动B")
+    @GetMapping("/getActivityByUserId/{userId}")
+    public RespBean getUserJoinActivityB (@PathVariable("userId")Long userId){
+        try {
+            List<ActivityB> activityBList = activityBService.selectActivityBByUserId(userId);
+            if(!CollectionUtils.isEmpty(activityBList)){
+                return RespBean.success("查询成功",activityBList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("查询失败");
     }
 
 }

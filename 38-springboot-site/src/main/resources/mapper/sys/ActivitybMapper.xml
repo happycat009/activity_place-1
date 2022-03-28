@@ -15,9 +15,9 @@
         <result column="content" property="content" />
         <result column="img" property="img" />
         <result column="create_time" property="createTime" />
-        <result column="start_time" property="start_time" />
-        <result column="end_time" property="end_time" />
-        <result column="update_time" property="update_time" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="update_time" property="updateTime" />
         <result column="favour_num" property="favourNum" />
         <result column="join_num" property="joinNum" />
         <result column="need_num" property="needNum" />
@@ -28,5 +28,11 @@
         <result column="impose" property="impose" />
         <result column="is_delete" property="isDelete" />
     </resultMap>
+
+    <select id="selectActivityBByUserId" resultMap="BaseResultMap">
+        select ab.*
+        from sys_activity_b ab,sys_user_activity ua
+        where ab.id=ua.activity_id and ua.user_id = #{userId}
+    </select>
 
 </mapper>
