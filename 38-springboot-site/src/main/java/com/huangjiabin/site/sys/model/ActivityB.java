@@ -21,9 +21,9 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("sys_activityb")
-@ApiModel(value="Activityb对象", description="")
-public class Activityb implements Serializable {
+@TableName("sys_activity_b")
+@ApiModel(value="ActivityB对象", description="")
+public class ActivityB implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,7 +1,7 @@
 package com.huangjiabin.site.sys.mapper;
 
-import com.huangjiabin.site.sys.model.Activityb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.huangjiabin.site.sys.model.ActivityB;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author huangjiabin
  * @since 2022-03-20
  */
-public interface ActivitybMapper extends BaseMapper<Activityb> {
+public interface ActivityBMapper extends BaseMapper<ActivityB> {
 
 }

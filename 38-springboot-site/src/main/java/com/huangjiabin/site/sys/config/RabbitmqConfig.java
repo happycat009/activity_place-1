@@ -1,6 +1,7 @@
 package com.huangjiabin.site.sys.config;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.huangjiabin.site.sys.mapper.EmailLogMapper;
 import com.huangjiabin.site.sys.model.EmailConstants;
 import com.huangjiabin.site.sys.model.EmailLog;
 import com.huangjiabin.site.sys.service.EmailLogService;
@@ -12,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
+
 @Configuration
 @Slf4j
 public class RabbitmqConfig {
-    @Autowired
-    private EmailLogService emailLogService;
+    @Resource
+    private EmailLogMapper emailLogMapper;
     @Autowired
     private CachingConnectionFactory cachingConnectionFactory;
     @Bean
@@ -31,8 +34,7 @@ public class RabbitmqConfig {
             String emailLogId = data.getId();
             if(ack){
                 log.info("{}=========>消息发送成功",emailLogId);
-                emailLogService.update(new UpdateWrapper<EmailLog>().set("status",1).eq("email_log_id",emailLogId));
-
+                emailLogMapper.update(null,new UpdateWrapper<EmailLog>().set("status",1).eq("email_log_id",emailLogId));
             }else {
                 log.info("{}=========>消息发送失败",emailLogId);
             }

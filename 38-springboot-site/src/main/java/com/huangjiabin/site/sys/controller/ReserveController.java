@@ -8,13 +8,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huangjiabin.site.sys.model.*;
 import com.huangjiabin.site.sys.service.*;
 import com.huangjiabin.site.sys.util.EntityUtil;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +37,7 @@ public class ReserveController {
     @Autowired
     private ReserveService reserveService;
     @Autowired
-    private ActivitybService activitybService;
+    private ActivityBService activityBService;
     @Autowired
     private ReserveHandleService reserveHandleService;
     @Autowired
@@ -79,25 +76,28 @@ public class ReserveController {
     @PutMapping("/placeAndActivityBReserve")
     public RespBean placeAndActivityBReserve(@RequestBody Map map){
         Reserve reserve;
-        Activityb activityb;
+        ActivityB activityB;
         LocalDateTime createTime = LocalDateTime.now();
         try {
             reserve = EntityUtil.mapToBean(map, Reserve.class);
-            activityb = EntityUtil.mapToBean(map,Activityb.class);
+            activityB = EntityUtil.mapToBean(map,ActivityB.class);
             reserve.setCreateTime(createTime);  //创建时间
             reserve.setReserveStatus(35);      //预约状态   35为预约中
             reserve.setReserveTarget(45);       //预约目标  45为场地
             reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
             reserve.setIsCancel(0);             //是否删除（逻辑删除）  0为否
             Boolean result = reserveService.save(reserve);
-            activityb.setCreateTime(createTime);
-            activityb.setReserveId(reserve.getId());
-            Boolean result2 = activitybService.save(activityb);
+            activityB.setCreateTime(createTime);
+            activityB.setReserveId(reserve.getId());
+            Boolean result2 = activityBService.save(activityB);
             Map mapResult = new HashMap();
             mapResult.put("reserve",reserve);
-            mapResult.put("activityb",activityb);
+            mapResult.put("activityB",activityB);
             if(result&&result2){
-                return RespBean.success("场地预约成功",mapResult);
+                Boolean result3 = emailLogService.sendEmail(reserve);
+                if(result3){
+                    return RespBean.success("场地预约成功",mapResult);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,14 +262,14 @@ public class ReserveController {
         }
         //判断删除的是否是场地预定信息且是否有活动，如果是把活动设置未
         if(one.getReserveTarget()==49){
-            QueryWrapper<Activityb> activitybQueryWrapper = new QueryWrapper<>();
-            activitybQueryWrapper.eq("reserve_id",one.getId());
-            Activityb one1 = activitybService.getOne(activitybQueryWrapper);
+            QueryWrapper<ActivityB> activityBQueryWrapper = new QueryWrapper<>();
+            activityBQueryWrapper.eq("reserve_id",one.getId());
+            ActivityB one1 = activityBService.getOne(activityBQueryWrapper);
             if(one1!=null){
-                UpdateWrapper<Activityb> uwActivityb = new UpdateWrapper<>();
-                uwActivityb.eq("reserve_id",one.getId());
-                uwActivityb.set("activity_istop",1);
-                boolean update1 = activitybService.update(uwActivityb);
+                UpdateWrapper<ActivityB> uwActivityB = new UpdateWrapper<>();
+                uwActivityB.eq("reserve_id",one.getId());
+                uwActivityB.set("is_top",1);
+                boolean update1 = activityBService.update(uwActivityB);
                 if(!update1){
                     return RespBean.error("删除失败");
                 }

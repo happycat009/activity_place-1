@@ -1,6 +1,6 @@
 package com.huangjiabin.site.sys.service;
 
-import com.huangjiabin.site.sys.model.Activityb;
+import com.huangjiabin.site.sys.model.ActivityB;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author huangjiabin
  * @since 2022-03-20
  */
-public interface ActivitybService extends IService<Activityb> {
+public interface ActivityBService extends IService<ActivityB> {
 
 }
