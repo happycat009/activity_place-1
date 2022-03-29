@@ -4,15 +4,35 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.huangjiabin.site.sys.model.Activity">
-        <id column="id" property="id" />
+        <result column="id" property="id" />
+        <result column="user_id" property="userId" />
         <result column="reserve_id" property="reserveId" />
+        <result column="place_id" property="placeId" />
         <result column="title" property="title" />
+        <result column="label" property="label" />
+        <result column="type" property="type" />
+        <result column="locale" property="locale" />
         <result column="content" property="content" />
-        <result column="people_number" property="peopleNumber" />
+        <result column="img" property="img" />
+        <result column="create_time" property="createTime" />
         <result column="start_time" property="startTime" />
         <result column="end_time" property="endTime" />
-        <result column="is_publish" property="isPublish" />
-        <result column="code" property="code" />
+        <result column="update_time" property="updateTime" />
+        <result column="favour_num" property="favourNum" />
+        <result column="join_num" property="joinNum" />
+        <result column="need_num" property="needNum" />
+        <result column="read_num" property="readNum" />
+        <result column="is_stop" property="isStop" />
+        <result column="is_top" property="isTop" />
+        <result column="is_public" property="isPublic" />
+        <result column="impose" property="impose" />
+        <result column="is_delete" property="isDelete" />
     </resultMap>
+
+    <select id="selectActivityByUserId" resultMap="BaseResultMap">
+        select ab.*
+        from sys_activity_b ab,sys_user_activity ua
+        where ab.id=ua.activity_id and ua.user_id = #{userId} and ua.is_out != 1
+    </select>
 
 </mapper>
