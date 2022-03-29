@@ -92,11 +92,11 @@ public class ResourcesController {
     @ApiOperation(value = "分页获取资源信息")
     @GetMapping("/getResourcesPage/{current}/{size}")
     public RespBean getResourcesPage(@PathVariable("size") Long size,@PathVariable("current") Long current){
-        IPage page  = new Page();
+        IPage<Resources> page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = resourcesService.pageMaps(page);
+        IPage<Resources> result = resourcesService.page(page);
         return RespBean.success("true",result);
     }
 
