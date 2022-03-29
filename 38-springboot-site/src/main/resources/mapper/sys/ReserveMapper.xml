@@ -17,4 +17,12 @@
         <result column="is_cancel" property="isCancel" />
     </resultMap>
 
+    <select id="selectNotConflict" resultType="com.huangjiabin.site.sys.model.Reserve">
+        select * from sys_reserve
+        where target_id = 1
+        and (  (start_time >= #{startTime} and start_time <![CDATA[<=]]> #{endTime})
+        or (start_time <![CDATA[<=]]>  #{startTime} and end_time >= #{endTime})
+        or (end_time   >=  #{startTime} and  end_time <![CDATA[<=]]> #{endTime}))
+    </select>
+
 </mapper>

@@ -51,11 +51,11 @@ public class PlaceController {
     public RespBean getPlacePage(@PathVariable("size") Long size,@PathVariable("current") Long current){
         QueryWrapper<Place> qw = new QueryWrapper<>();
         qw.eq("del_flag",0);
-        IPage page  = new Page();
+        IPage<Place> page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = placeService.pageMaps(page,qw);
+        IPage<Place> result = placeService.page(page,qw);
         return RespBean.success("true",result);
     }
     @ApiOperation(value="修改场所信息")

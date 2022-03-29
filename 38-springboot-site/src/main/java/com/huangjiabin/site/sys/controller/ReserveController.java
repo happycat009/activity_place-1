@@ -12,9 +12,11 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -45,27 +47,36 @@ public class ReserveController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    public static LocalDateTime createTime=LocalDateTime.now();
 
-    @ApiOperation(value = "预定场地或资源")
+    @ApiOperation(value = "申请场地或资源")
     @PostMapping("/createReserve")
     public RespBean placeReserve(@RequestBody Map map){
         Reserve reserve;
-        LocalDateTime createTime = LocalDateTime.now();
         try {
             reserve = EntityUtil.mapToBean(map, Reserve.class);
-            reserve.setCreateTime(createTime);  //创建时间
-            reserve.setReserveStatus(35);      //预约状态   35为预约中
-            //reserve.setReserveTarget(45);       //预约目标  45为场地
-            reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
-            reserve.setIsCancel(0);
-            Boolean result = reserveService.save(reserve);
-            if(result){
-                return RespBean.success("预约成功",reserve);
+            //判断是否可以预定
+            Boolean canReserve = reserveService.isCanReserve(reserve);
+            if(canReserve){
+                reserve.setCreateTime(createTime);  //创建时间
+                reserve.setReserveStatus(52);      //预约状态   52预约中53预定成功54预定失败
+                //reserve.setReserveTarget(45);       //预约目标  49为场地 50为资源
+                reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
+                reserve.setIsCancel(0);             //是否取消
+                Boolean result = reserveService.save(reserve);
+                if(result){
+                    return RespBean.success("申请成功",reserve);
+                }
+            }else {
+                return RespBean.error("申请失败，请核实时间");
             }
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return  RespBean.error("申请失败，请核实申请人和申请目标");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return RespBean.error("预约失败");
+        return RespBean.error("申请失败");
     }
 
     /*
@@ -77,33 +88,46 @@ public class ReserveController {
     public RespBean placeAndActivityBReserve(@RequestBody Map map){
         Reserve reserve;
         ActivityB activityB;
-        LocalDateTime createTime = LocalDateTime.now();
         try {
             reserve = EntityUtil.mapToBean(map, Reserve.class);
-            activityB = EntityUtil.mapToBean(map,ActivityB.class);
-            reserve.setCreateTime(createTime);  //创建时间
-            reserve.setReserveStatus(35);      //预约状态   35为预约中
-            reserve.setReserveTarget(45);       //预约目标  45为场地
-            reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
-            reserve.setIsCancel(0);             //是否删除（逻辑删除）  0为否
-            Boolean result = reserveService.save(reserve);
-            activityB.setCreateTime(createTime);
-            activityB.setReserveId(reserve.getId());
-            Boolean result2 = activityBService.save(activityB);
-            Map mapResult = new HashMap();
-            mapResult.put("reserve",reserve);
-            mapResult.put("activityB",activityB);
-            if(result&&result2){
-                Boolean result3 = emailLogService.sendEmail(reserve);
-                if(result3){
-                    return RespBean.success("场地预约成功",mapResult);
+            //判断是否可以预定
+            Boolean canReserve = reserveService.isCanReserve(reserve);
+            if(canReserve){
+                //预定场地
+                activityB = EntityUtil.mapToBean(map,ActivityB.class);
+                reserve.setCreateTime(createTime);  //创建时间
+                reserve.setReserveStatus(52);      //预约状态   52预约中53预定成功54预定失败
+                //reserve.setReserveTarget(45);       //预约目标  49为场地 50为资源
+                reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
+                reserve.setIsCancel(0);             //是否取消
+                Boolean result = reserveService.save(reserve);
+                if(result){
+                    //预定活动
+                    activityB.setCreateTime(createTime);
+                    activityB.setReserveId(reserve.getId());
+                    Boolean result2 = activityBService.save(activityB);
+                    Map mapResult = new HashMap();
+                    mapResult.put("reserve",reserve);
+                    mapResult.put("activityB",activityB);
+                    if(result&&result2){
+                        //发送邮箱
+                        Boolean result3 = emailLogService.sendEmail(reserve);
+                        if(result3){
+                            return RespBean.success("场地预约成功",mapResult);
+                        }
+                    }
                 }
+            }else {
+                return RespBean.error("申请失败，请核实时间");
             }
+        }catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return  RespBean.error("申请失败，请核实申请人id和申请目标id");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
-        return RespBean.error("场地预约失败");
+        return RespBean.error("申请失败");
     }
     @PostMapping("/placeAndActivityReserve")
     public RespBean placeAndActivityReserve(@RequestBody Map map){
@@ -172,11 +196,11 @@ public class ReserveController {
     @ApiOperation(value = "分页查询所有预定信息")
     @GetMapping("/selectAllReserveForPage/{current}/{size}")
     public RespBean getPlaceReserveForPage(@PathVariable("size") Long size,@PathVariable("current") Long current){
-        IPage page  = new Page();
+        IPage<Reserve> page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = reserveService.pageMaps(page);
+        IPage<Reserve> result = reserveService.page(page);
         return RespBean.success("true",result);
     }
 
@@ -272,6 +296,19 @@ public class ReserveController {
         }else {
             return RespBean.error("删除失败");
         }
+    }
+    @ApiOperation(value = "测试接口")
+    @PostMapping("/test")
+    public RespBean testIsCanReserve(@RequestBody Map map){
+        try {
+
+            Reserve reserve = EntityUtil.mapToBean(map, Reserve.class);
+            reserveService.isCanReserve(reserve);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("毁灭吧，赶紧的");
     }
 
 

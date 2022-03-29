@@ -44,11 +44,11 @@ public class ActivityBController {
     @ApiOperation(value = "分页查活动信息，逻辑删除查的到")
     @GetMapping("/getActivityBPageT/{current}/{size}")
     public RespBean getActivityBPageT (@PathVariable("size") Long size, @PathVariable("current") Long current){
-        IPage page  = new Page();
+        IPage<ActivityB> page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = activityBService.pageMaps(page);
+        IPage<ActivityB> result = activityBService.page(page);
         return RespBean.success("true",result);
     }
 
@@ -57,11 +57,11 @@ public class ActivityBController {
     public RespBean getActivityBPage (@PathVariable("size") Long size, @PathVariable("current") Long current){
         QueryWrapper<ActivityB> qw = new QueryWrapper<>();
         qw.eq("is_delete",0);
-        IPage page  = new Page();
+        IPage<ActivityB> page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = activityBService.pageMaps(page,qw);
+        IPage<ActivityB> result = activityBService.page(page,qw);
         return RespBean.success("true",result);
     }
 

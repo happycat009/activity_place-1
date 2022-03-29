@@ -21,5 +21,5 @@ public interface ReserveService extends IService<Reserve> {
 
     PageInfo<Reserve> getAllReserveForPage(Integer pageNum, Integer pageSize);
 
-    Boolean isCanReserve(LocalDateTime startTime, LocalDateTime endTime,Long targetId);
+    Boolean isCanReserve(Reserve reserve);
 }

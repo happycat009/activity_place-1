@@ -6,9 +6,13 @@ import com.huangjiabin.site.sys.model.Reserve;
 import com.huangjiabin.site.sys.mapper.ReserveMapper;
 import com.huangjiabin.site.sys.service.ReserveService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +25,8 @@ import java.util.Map;
  */
 @Service
 public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> implements ReserveService {
-
+    @Resource
+    private ReserveMapper reserveMapper;
     @Override
     public Map getPlaceReserve(Long placeId) {
 
@@ -38,7 +43,17 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
     }
 
     @Override
-    public Boolean isCanReserve(LocalDateTime startTime, LocalDateTime endTime, Long targetId) {
-        return null;
+    public Boolean isCanReserve(Reserve reserve) {
+        List<Reserve> reserves = reserveMapper.selectNotConflict(reserve.getTargetId(), reserve.getStartTime(), reserve.getEndTime());
+        System.out.println(reserves);
+        LocalDateTime startTime = reserve.getStartTime();
+        if(startTime.isAfter(reserve.getEndTime())
+                ||startTime.isBefore(LocalDateTime.now())){
+            return false;
+        }
+        if(!CollectionUtils.isEmpty(reserves)){
+            return false;
+        }
+        return true;
     }
 }

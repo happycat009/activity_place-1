@@ -60,11 +60,11 @@ public class UserController {
     @ApiOperation(value = "分页查询用户基本信息")
     @GetMapping("/getUserPage/{current}/{size}")
     public RespBean getUserList(@PathVariable("size") Long size,@PathVariable("current") Long current) throws NullPointerException {
-        IPage page  = new Page();
+        IPage<User> page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = userService.pageMaps(page);
+        IPage<User> result = userService.page(page);
         return RespBean.success("true",result);
     }
 
