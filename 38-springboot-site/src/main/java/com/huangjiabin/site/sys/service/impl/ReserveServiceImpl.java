@@ -8,6 +8,7 @@ import com.huangjiabin.site.sys.service.ReserveService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -34,5 +35,10 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
         pageInfo.setPageInfo(baseMapper.selectPage(cityPage, null));
         return pageInfo;
 
+    }
+
+    @Override
+    public Boolean isCanReserve(LocalDateTime startTime, LocalDateTime endTime, Long targetId) {
+        return null;
     }
 }

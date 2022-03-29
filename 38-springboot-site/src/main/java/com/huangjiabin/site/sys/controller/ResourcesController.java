@@ -85,18 +85,18 @@ public class ResourcesController {
     public RespBean updateResources(@RequestBody Resources resources){
         boolean result = resourcesService.updateById(resources);
         if(result){
-            RespBean.success("更改成功",resources);
+            return RespBean.success("更改成功",resources);
         }
         return RespBean.error("更改失败");
     }
     @ApiOperation(value = "分页获取资源信息")
     @GetMapping("/getResourcesPage/{current}/{size}")
     public RespBean getResourcesPage(@PathVariable("size") Long size,@PathVariable("current") Long current){
-        IPage page  = new Page();
+        IPage<Resources> page  = new Page();
         //设置分页的数据
         page.setCurrent(current);//页码
         page.setSize(size);// 每页的记录数
-        IPage<Map<String,Object>> result = resourcesService.pageMaps(page);
+        IPage<Resources> result = resourcesService.page(page);
         return RespBean.success("true",result);
     }
 

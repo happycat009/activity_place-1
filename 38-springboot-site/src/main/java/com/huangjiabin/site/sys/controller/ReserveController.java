@@ -211,8 +211,8 @@ public class ReserveController {
         return RespBean.success("true",reserveList);
     }
 
-    @ApiOperation(value = "删除预定")
-    @PostMapping(value = "/deleteReserve/{id}")
+    @ApiOperation(value = "删除预定，逻辑删除")
+    @DeleteMapping(value = "/deleteReserve/{id}")
     public RespBean deleteReserve(@PathVariable("id") Long id){
         QueryWrapper<Reserve> qw = new QueryWrapper<>();
         qw.eq("id",id);

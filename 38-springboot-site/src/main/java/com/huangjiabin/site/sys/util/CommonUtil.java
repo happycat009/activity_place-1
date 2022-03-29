@@ -33,4 +33,5 @@ public class CommonUtil {
                 : JSONArray.parseArray(JSON.toJSONString(list, SerializerFeature.WriteMapNullValue));
     }
 
+
 }

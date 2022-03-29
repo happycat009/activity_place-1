@@ -4,6 +4,8 @@ import com.huangjiabin.site.sys.model.PageInfo;
 import com.huangjiabin.site.sys.model.Reserve;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -18,4 +20,6 @@ public interface ReserveService extends IService<Reserve> {
     Map getPlaceReserve(Long placeId);
 
     PageInfo<Reserve> getAllReserveForPage(Integer pageNum, Integer pageSize);
+
+    Boolean isCanReserve(LocalDateTime startTime, LocalDateTime endTime,Long targetId);
 }
