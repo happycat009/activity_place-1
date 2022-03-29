@@ -11,6 +11,7 @@ import com.huangjiabin.site.sys.service.UserRoleService;
 import com.huangjiabin.site.sys.service.UserService;
 import com.huangjiabin.site.sys.service.UserStudentService;
 import com.huangjiabin.site.sys.util.EntityUtil;
+import com.huangjiabin.site.sys.util.ExcelUtils;
 import com.huangjiabin.site.sys.util.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -18,9 +19,17 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -228,6 +237,71 @@ public class UserController {
             return RespBean.success("激活成功");
         }
         return RespBean.error("激活失败");
+    }
+    @ApiOperation(value = "批量创建用户，不可创建管理员")
+    @PostMapping("/createUserBatch")
+    public RespBean createUserBatch(@RequestParam("file") MultipartFile file) throws Exception {
+        Map<String,Object> map = new HashMap<>(16);
+        //调用工具类解析excel文件
+        List<ArrayList<String>> row = ExcelUtils.analysis(file);
+        List<User> userList = new ArrayList<>();
+        //打印信息
+        for (int i = 0;i<row.size();i++){
+            User user = new User();
+            user.setUsername(row.get(i).get(0));
+            user.setPassword(row.get(i).get(1));
+            user.setAddress(row.get(i).get(2));
+            user.setGender(Integer.valueOf(row.get(i).get(3)));
+            user.setNickname(row.get(i).get(4));
+            user.setPhone(row.get(i).get(5));
+            user.setTitle(Integer.valueOf(row.get(i).get(6)));
+            user.setEmail(row.get(i).get(7));
+            user.setDisabled(0);
+            user.setCredit(6);
+            user.setDelFlag(0);
+            user.setPhoto("ce6ceddd1d9a46f6bdc1a09af76ca7b7-小埋.jpg");
+            //旧密码不设置
+            //user.setOldPassword("");
+            //角色不设置
+            //user.setRoles(Lists.newArrayList());
+            userList.add(user);
+        }
+        boolean b = userService.saveBatch(userList);
+        if(b){
+            ArrayList<UserRole> userRoleList = new ArrayList<>();
+            for(User user:userList){
+                UserRole userRole = new UserRole();
+                userRole.setUserId(user.getId());
+                if(user.getTitle()==28){
+                    userRole.setRoleId(new Long(28));
+                }else {
+                    userRole.setRoleId(new Long(29));
+                }
+                userRoleList.add(userRole);
+            }
+            userRoleService.saveBatch(userRoleList);
+        }
+        return RespBean.success("创建成功");
+    }
+
+    @GetMapping(value = "downModel")
+    public void download(HttpServletRequest request,HttpServletResponse response) {
+
+        String filename = "批量注册模板.xls";
+
+        // 设置信息给客户端不解析
+        String type = new MimetypesFileTypeMap().getContentType(filename);
+        // 设置contentType，即告诉客户端所发送的数据属于什么类型
+        response.setHeader("Content-type",type);
+        try {
+            // 设置编码
+            String hehe = new String(filename.getBytes("utf-8"), "iso-8859-1");
+            // 设置扩展头，当Content-Type 的类型为要下载的类型时 , 这个信息头会告诉浏览器这个文件的名字和类型。
+            response.setHeader("Content-Disposition", "attachment;filename=" + hehe);
+            ExcelUtils.download(filename,request, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

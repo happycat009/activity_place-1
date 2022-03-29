@@ -5,12 +5,14 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.ArrayList;
 
 public class ExcelUtils {
@@ -40,8 +42,11 @@ public class ExcelUtils {
                 //循环获取每一列
                 ArrayList<String> cell = new ArrayList<>();
                 for (int j = 0; j < sheetRow.getPhysicalNumberOfCells(); j++) {
+                    //System.out.println(sheetRow.getCell(j).getCellTypeEnum());
+                    //System.out.println(sheetRow.getCell(j).toString());
                     //将每一个单元格的值装入列集合
-                    cell.add(sheetRow.getCell(j).getStringCellValue());
+                    //cell.add(sheetRow.getCell(j).getStringCellValue());
+                    cell.add(sheetRow.getCell(j).toString());
                 }
                 //将装有每一列的集合装入大集合
                 row.add(cell);
@@ -72,6 +77,23 @@ public class ExcelUtils {
             return true;
         }
 
+    }
+    public static void download(String filename, HttpServletRequest request, HttpServletResponse res) throws IOException {
+        // 发送给客户端的数据
+        OutputStream outputStream = res.getOutputStream();
+        byte[] buff = new byte[1024];
+        BufferedInputStream bis = null;
+        // 读取filename
+        bis = new BufferedInputStream(new FileInputStream(new File("D:\\Java\\IDEA_WorkSpece\\SpringBoot-Project\\38-springboot-site\\file\\" + filename)));
+        int i = bis.read(buff);
+        while (i != -1) {
+            outputStream.write(buff, 0, buff.length);
+            outputStream.flush();
+            i = bis.read(buff);
+        }
+
+        bis.close();
+        outputStream.close();
     }
 
 

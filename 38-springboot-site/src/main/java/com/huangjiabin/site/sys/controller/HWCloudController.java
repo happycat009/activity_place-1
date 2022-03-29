@@ -67,6 +67,14 @@ public class HWCloudController {
         HWCloudUtils.dowloadFile(rep,inputStream,filename);
         return RespBean.success("成功");//重定向到当前下载页面
     }
+    @GetMapping("/downloadRegisterModel")
+    public RespBean downloadRegisterModel(HttpServletResponse rep) {
+        //obs下载文件
+        ObsObject obsObject = HWCloudUtils.getFile("activity-place","批量注册模板.xls");
+        InputStream inputStream = obsObject.getObjectContent();
+        HWCloudUtils.dowloadFile(rep,inputStream,"批量注册模板.xls");
+        return RespBean.success("成功");//重定向到当前下载页面
+    }
     @GetMapping("/sandPhoneCode")
     public RespBean sandPhoneCode(String mobile,String content,HttpServletRequest request){
         HWCloudUtils.sendCode(mobile,content,request);

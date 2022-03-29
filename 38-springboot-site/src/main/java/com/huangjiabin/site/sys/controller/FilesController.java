@@ -1,7 +1,15 @@
 package com.huangjiabin.site.sys.controller;
+import com.google.common.collect.Lists;
 
 
+import com.huangjiabin.site.sys.model.RespBean;
+import com.huangjiabin.site.sys.model.User;
+import com.huangjiabin.site.sys.model.UserRole;
+import com.huangjiabin.site.sys.service.UserRoleService;
+import com.huangjiabin.site.sys.service.UserService;
 import com.huangjiabin.site.sys.util.ExcelUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,25 +32,5 @@ import java.util.Map;
 @RestController
 @RequestMapping("/sys/files")
 public class FilesController {
-
-    @RequestMapping("/upload")
-    public Map pubggupload(@RequestParam("file") MultipartFile file) throws Exception {
-        Map<String,Object> map = new HashMap<>(16);
-        //调用工具类解析excel文件
-        List<ArrayList<String>> row = ExcelUtils.analysis(file);
-        //打印信息
-        for (int i = 0;i<row.size();i++){
-            List<String> cell = row.get(i);
-            for (int j = 0;j<cell.size();j++){
-                System.out.print(cell.get(j)+" ");
-            }
-            System.out.println();
-        }
-
-        map.put("status","success");
-
-        return map;
-
-    }
 }
 
