@@ -1,6 +1,7 @@
 package com.huangjiabin.site.sys.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huangjiabin.site.sys.model.*;
@@ -99,6 +100,30 @@ public class ResourcesController {
         IPage<Resources> result = resourcesService.page(page);
         return RespBean.success("true",result);
     }
+    @ApiOperation(value = "删除资源信息，逻辑删除")
+    @DeleteMapping("/deleteResourcesPById/{id}")
+    public RespBean deleteResourcesPById(@PathVariable("id") Long id){
+        UpdateWrapper<Resources> uw = new UpdateWrapper<>();
+        uw.set("is_delete",1);
+        uw.eq("id",id);
+        boolean update = resourcesService.update(uw);
+        if(update){
+            return RespBean.success("删除成功");
+        }else {
+            return RespBean.error("删除失败");
+        }
+    }
+    @ApiOperation(value = "删除资源信息，物理删除")
+    @DeleteMapping("/deleteResourcesTById/{id}")
+    public RespBean deleteResourcesTById(@PathVariable("id") Long id){
+        boolean delete = resourcesService.removeById(id);
+        if(delete){
+            return RespBean.success("删除成功");
+        }else {
+            return RespBean.error("删除失败");
+        }
+    }
+
 
 }
 
