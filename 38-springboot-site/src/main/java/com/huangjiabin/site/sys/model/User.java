@@ -37,7 +37,7 @@ public class User implements Serializable, UserDetails {
 
     @ApiModelProperty(value = "用户id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING)  不用这了
     private Long id;
 
     @ApiModelProperty(value = "账号")
