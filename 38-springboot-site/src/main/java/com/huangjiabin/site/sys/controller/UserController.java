@@ -251,10 +251,19 @@ public class UserController {
             user.setUsername(row.get(i).get(0));
             user.setPassword(row.get(i).get(1));
             user.setAddress(row.get(i).get(2));
-            user.setGender(Integer.valueOf(row.get(i).get(3)));
+            //user.setGender(Integer.valueOf(row.get(i).get(3)));
+            if(row.get(i).get(3)=="男"){
+                user.setGender(16);
+            }else {
+                user.setGender(17);
+            }
             user.setNickname(row.get(i).get(4));
             user.setPhone(row.get(i).get(5));
-            user.setTitle(Integer.valueOf(row.get(i).get(6)));
+            if(row.get(i).get(6)=="学生"){
+                user.setTitle(28);
+            }else {
+                user.setTitle(29);
+            }
             user.setEmail(row.get(i).get(7));
             user.setDisabled(0);
             user.setCredit(6);

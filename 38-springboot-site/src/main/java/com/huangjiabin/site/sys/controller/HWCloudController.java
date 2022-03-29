@@ -95,7 +95,6 @@ public class HWCloudController {
         String code=CommonUtil.getRandomNumCode(4);
         message.setSubject("您注册的校园公共活动场所验证码是【"+code+"】五分钟内有效！！！");
         String emailToken=jwtTokenUtil.generateEmailToken(code);
-        System.out.println("wwwwwwwwwwwwwwwwwwwwwwwww"+jwtTokenUtil.getCodeByToken(emailToken));
         //邮件正文
         message.setText("https://www.shdf.gov.cn/");//！！！
         javaMailSender.send(message);
