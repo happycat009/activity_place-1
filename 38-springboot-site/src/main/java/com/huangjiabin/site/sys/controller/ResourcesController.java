@@ -85,7 +85,7 @@ public class ResourcesController {
     public RespBean updateResources(@RequestBody Resources resources){
         boolean result = resourcesService.updateById(resources);
         if(result){
-            RespBean.success("更改成功",resources);
+           return RespBean.success("更改成功",resources);
         }
         return RespBean.error("更改失败");
     }
