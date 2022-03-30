@@ -9,7 +9,6 @@ import com.huangjiabin.site.sys.model.*;
 import com.huangjiabin.site.sys.service.StudentService;
 import com.huangjiabin.site.sys.service.UserRoleService;
 import com.huangjiabin.site.sys.service.UserService;
-import com.huangjiabin.site.sys.service.UserStudentService;
 import com.huangjiabin.site.sys.util.EntityUtil;
 import com.huangjiabin.site.sys.util.ExcelUtils;
 import com.huangjiabin.site.sys.util.JwtTokenUtil;
@@ -54,8 +53,6 @@ public class UserController {
 
     @Autowired
     private UserRoleService userRoleService;
-    @Autowired
-    private UserStudentService userStudentService;
 
     @ApiOperation(value = "分页查询用户基本信息")
     @GetMapping("/getUserPage/{current}/{size}")

@@ -94,7 +94,7 @@ public class ReserveController {
                 //预定场地
                 activity = EntityUtil.mapToBean(map, Activity.class);
                 reserve.setCreateTime(createTime);  //创建时间
-                reserve.setReserveStatus(52);      //预约状态   52预约中53预定成功54预定失败
+                reserve.setReserveStatus(51);      //预约状态   51预约中52预定成功53预定失败
                 //reserve.setReserveTarget(45);       //预约目标  49为场地 50为资源
                 reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
                 reserve.setIsCancel(0);             //是否取消
