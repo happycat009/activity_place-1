@@ -4,7 +4,6 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.huangjiabin.site.sys.model.Student">
-        <id column="id" property="id" />
         <result column="student_id" property="studentId"/>
         <result column="teacher_id" property="teacherId"/>
         <result column="sno" property="sno" />
