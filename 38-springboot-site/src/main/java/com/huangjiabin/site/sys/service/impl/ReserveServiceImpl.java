@@ -59,6 +59,7 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
     @Override
     public RespBean isCanReserve(Reserve reserve) {
         LocalDateTime startTime = reserve.getStartTime();
+        //判断时间
         if(startTime.isAfter(reserve.getEndTime())
                 ||startTime.isBefore(LocalDateTime.now())){
             return RespBean.error("开始时间大于结束时间");

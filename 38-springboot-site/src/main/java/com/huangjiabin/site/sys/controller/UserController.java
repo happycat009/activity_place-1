@@ -87,6 +87,10 @@ public class UserController {
                 RespBean.error("无效token");
             }
                 User user = EntityUtil.mapToBean(map, User.class);
+                RespBean respBean=userService.checkUserCanCreate(user);
+                if(respBean.getCode()!=200){
+                    return respBean;
+                }
                 user.setCredit(6);
                 user.setDelFlag(0);
                 user.setDisabled(0);
@@ -107,7 +111,12 @@ public class UserController {
     @PostMapping("/createUserT")
     public RespBean createUserT(@RequestBody Map map, HttpServletRequest request){
         try {
+
             User user = EntityUtil.mapToBean(map, User.class);
+            RespBean respBean=userService.checkUserCanCreate(user);
+            if(respBean.getCode()!=200){
+                return respBean;
+            }
             user.setCredit(6);
             user.setDelFlag(0);
             user.setDisabled(0);
@@ -147,9 +156,12 @@ public class UserController {
         }
         boolean result1;
         boolean result2 = false;
-        User user;
         Student student = new Student();
-            user = EntityUtil.mapToBean(map, User.class);
+            User user = EntityUtil.mapToBean(map, User.class);
+            RespBean respBean=userService.checkUserCanCreate(user);
+            if(respBean.getCode()!=200){
+                return respBean;
+            }
             user.setCredit(6);
             user.setDelFlag(0);
             user.setDisabled(0);

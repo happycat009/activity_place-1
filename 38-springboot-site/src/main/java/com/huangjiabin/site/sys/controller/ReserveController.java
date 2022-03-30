@@ -88,7 +88,8 @@ public class ReserveController {
         try {
             reserve = EntityUtil.mapToBean(map, Reserve.class);
             //判断是否可以预定
-            if(reserveService.isCanReserve(reserve).getCode()==200){
+            RespBean respBean = reserveService.isCanReserve(reserve);
+            if(respBean.getCode()==200){
                 //预定场地
                 activity = EntityUtil.mapToBean(map, Activity.class);
                 reserve.setCreateTime(createTime);  //创建时间
@@ -114,7 +115,7 @@ public class ReserveController {
                     }
                 }
             }else {
-                return RespBean.error("申请失败，请核实时间");
+                return respBean;
             }
         }catch (DataIntegrityViolationException e) {
             e.printStackTrace();
