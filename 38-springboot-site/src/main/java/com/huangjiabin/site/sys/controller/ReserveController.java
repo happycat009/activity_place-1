@@ -42,6 +42,8 @@ public class ReserveController {
     private EmailLogService emailLogService;
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private PlaceService placeService;
 
     public static LocalDateTime createTime=LocalDateTime.now();
 
@@ -78,7 +80,7 @@ public class ReserveController {
     /*
         预定场和活动
     */
-    @ApiOperation(value = "申请场地和活动B预定")
+    @ApiOperation(value = "申请场地和活动预定")
     @Transactional
     @PutMapping("/placeAndActivityReserve")
     public RespBean placeAndActivityReserve(@RequestBody Map map){
@@ -174,7 +176,7 @@ public class ReserveController {
         return RespBean.success("true",reserveList);
     }
 
-    @ApiOperation(value = "按条件查询预定信息")
+    @ApiOperation(value = "按条件查询申请信息")
     @PostMapping(value = "/selectReserveByCondition")
     public RespBean getSpecialPlaceReserve(@RequestBody Map map){
         QueryWrapper<Reserve> qw = new QueryWrapper<>();
@@ -184,10 +186,12 @@ public class ReserveController {
                 qw.eq("target_id",map.get(key));    //预定目标id
             }else if("reserveStatus".equals(key)){
                 qw.eq("reserve_status",map.get(key));   //预定中51 成功52 失败53
-            }else if("startTime".equals(key)){
-                qw.ge("end_time",LocalDateTime.parse((String)map.get(key),df));
+            }else if("startTime".equals(key)){          //开始时间
+                qw.le("end_time",LocalDateTime.parse((String)map.get(key),df)).or().
+                le("start_time",LocalDateTime.parse((String)map.get(key),df));
             }else if("endTime".equals(key)){
-                qw.le("end_time",LocalDateTime.parse((String)map.get(key),df));
+                qw.ge("end_time",LocalDateTime.parse((String)map.get(key),df)).or().
+                ge("start_time",LocalDateTime.parse((String)map.get(key),df));
             }else if("isCancel".equals(key)){
                 qw.eq("is_cancel",map.get(key));
             }
@@ -196,19 +200,20 @@ public class ReserveController {
         return RespBean.success("true",reserveList);
     }
 
-    @ApiOperation(value = "删除预定，逻辑删除")
+    @ApiOperation(value = "删除申请，逻辑删除")
     @DeleteMapping(value = "/deleteReserve/{id}")
     public RespBean deleteReserve(@PathVariable("id") Long id){
-        QueryWrapper<Reserve> qw = new QueryWrapper<>();
-        qw.eq("id",id);
-        Reserve one = reserveService.getOne(qw);
-        if(one!=null) {
-            if(one.getReserveStatus()==51||one.getReserveStatus()==52){
+        Reserve reserve = reserveService.getById(id);
+        //判断申请是否失败
+        if(reserve!=null) {
+            //判断申请是否成功
+            if(reserve.getReserveStatus()==51||reserve.getReserveStatus()==52){
                 return RespBean.error("请先取消预定再删除");
             }
         }else {
             return RespBean.error("请核实预定id");
         }
+        //删除申请
         UpdateWrapper<Reserve> uw = new UpdateWrapper<>();
         uw.set("is_delete",1);
         uw.eq("id",id);
@@ -220,27 +225,17 @@ public class ReserveController {
         }
     }
 
-    @ApiOperation(value = "取消预定")
+    @ApiOperation(value = "取消申请")
     @PostMapping(value = "/cancelReserve/{id}")
     public RespBean cancelReserve(@PathVariable("id") Long id){
-        QueryWrapper<Reserve> qw = new QueryWrapper<>();
-        qw.eq("id",id);
-        Reserve one = reserveService.getOne(qw);
-        if(one!=null) {
-            if(one.getReserveStatus()==51||one.getReserveStatus()==52){
-                return RespBean.error("请先取消预定再删除");
-            }
-        }else {
-            return RespBean.error("请核实预定id");
-        }
-        //判断删除的是否是场地预定信息且是否有活动，如果是把活动设置未
-        if(one.getReserveTarget()==49){
-            QueryWrapper<Activity> activityQueryWrapper = new QueryWrapper<>();
-            activityQueryWrapper.eq("reserve_id",one.getId());
-            Activity one1 = activityService.getOne(activityQueryWrapper);
-            if(one1!=null){
+        Reserve reserve = reserveService.getById(id);
+        //判断是否场地申请
+        if(reserve.getReserveTarget()==49) {
+            Activity activity = activityService.getById(reserve.getId());
+            //判断是否活动申请
+            if(activity!=null){
                 UpdateWrapper<Activity> uwActivity = new UpdateWrapper<>();
-                uwActivity.eq("reserve_id",one.getId());
+                uwActivity.eq("reserve_id",activity.getId());
                 uwActivity.set("is_top",1);
                 boolean update1 = activityService.update(uwActivity);
                 if(!update1){
@@ -248,30 +243,17 @@ public class ReserveController {
                 }
             }
         }
+        //取消申请
         UpdateWrapper<Reserve> uw = new UpdateWrapper<>();
-        uw.set("is_delete",1);
+        uw.set("is_cancel",1);
         uw.eq("id",id);
         boolean update = reserveService.update(uw);
         if(update) {
-            return RespBean.success("删除成功");
+            return RespBean.success("取消成功");
         }else {
-            return RespBean.error("删除失败");
+            return RespBean.error("取消失败");
         }
     }
-    @ApiOperation(value = "测试接口")
-    @PostMapping("/test")
-    public RespBean testIsCanReserve(@RequestBody Map map){
-        try {
-
-            Reserve reserve = EntityUtil.mapToBean(map, Reserve.class);
-            reserveService.isCanReserve(reserve);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RespBean.error("毁灭吧，赶紧的");
-    }
-
 
 }
 

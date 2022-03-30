@@ -30,9 +30,9 @@
     </resultMap>
 
     <select id="selectActivityByUserId" resultMap="BaseResultMap">
-        select ab.*
-        from sys_activity_b ab,sys_user_activity ua
-        where ab.id=ua.activity_id and ua.user_id = #{userId} and ua.is_out != 1
+        select a.*
+        from sys_activity a,sys_user_activity ua
+        where a.id=ua.activity_id and ua.user_id = #{userId} and ua.is_out != 1
     </select>
 
 </mapper>
