@@ -73,6 +73,7 @@ public class PlaceController {
         UpdateWrapper<Place> qw= new UpdateWrapper<>();
         qw.eq("id",id).set("del_flag",1);
         boolean result = placeService.update(qw);
+
         if(result){
             return RespBean.success("删除成功");
         }

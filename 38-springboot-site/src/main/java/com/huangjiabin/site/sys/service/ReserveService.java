@@ -3,6 +3,7 @@ package com.huangjiabin.site.sys.service;
 import com.huangjiabin.site.sys.model.PageInfo;
 import com.huangjiabin.site.sys.model.Reserve;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.huangjiabin.site.sys.model.RespBean;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,5 +22,9 @@ public interface ReserveService extends IService<Reserve> {
 
     PageInfo<Reserve> getAllReserveForPage(Integer pageNum, Integer pageSize);
 
-    Boolean isCanReserve(Reserve reserve);
+    RespBean isCanReserve(Reserve reserve);
+
+    RespBean deleteReserveByIdP(Long id);
+
+    RespBean cancelReserveById(Long id);
 }

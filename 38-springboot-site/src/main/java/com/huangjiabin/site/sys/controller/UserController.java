@@ -103,6 +103,26 @@ public class UserController {
         }
         return RespBean.error("用户创建失败");
     }
+    @ApiOperation(value = "创建用户账号，无需邮箱验证")
+    @PostMapping("/createUserT")
+    public RespBean createUserT(@RequestBody Map map, HttpServletRequest request){
+        try {
+            User user = EntityUtil.mapToBean(map, User.class);
+            user.setCredit(6);
+            user.setDelFlag(0);
+            user.setDisabled(0);
+            userService.save(user);
+            UserRole userRole = new UserRole(user.getId(),new Long(user.getTitle()));
+            userRoleService.save(userRole);
+            RespBean success = RespBean.success("账号创建成功", user);
+            return success;
+        } catch (ExpiredJwtException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RespBean.error("用户创建失败");
+    }
+
     @ApiOperation(value = "创学生账号，成功返回学生信息")
     @Transactional
     @PostMapping("/createUserStudent")

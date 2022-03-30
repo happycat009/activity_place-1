@@ -15,5 +15,5 @@ import java.util.List;
  * @since 2022-03-03
  */
 public interface ReserveMapper extends BaseMapper<Reserve> {
-    List<Reserve> selectNotConflict(Long targetId, LocalDateTime startTime,LocalDateTime endTime);
+    List<Reserve> selectNotConflict(Reserve reserve);
 }

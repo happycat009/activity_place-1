@@ -54,8 +54,7 @@ public class ReserveController {
         try {
             reserve = EntityUtil.mapToBean(map, Reserve.class);
             //判断是否可以预定
-            Boolean canReserve = reserveService.isCanReserve(reserve);
-            if(canReserve){
+            if(reserveService.isCanReserve(reserve).getCode()==200){
                 reserve.setCreateTime(createTime);  //创建时间
                 reserve.setReserveStatus(52);      //预约状态   52预约中53预定成功54预定失败
                 //reserve.setReserveTarget(45);       //预约目标  49为场地 50为资源
@@ -89,8 +88,7 @@ public class ReserveController {
         try {
             reserve = EntityUtil.mapToBean(map, Reserve.class);
             //判断是否可以预定
-            Boolean canReserve = reserveService.isCanReserve(reserve);
-            if(canReserve){
+            if(reserveService.isCanReserve(reserve).getCode()==200){
                 //预定场地
                 activity = EntityUtil.mapToBean(map, Activity.class);
                 reserve.setCreateTime(createTime);  //创建时间
@@ -203,56 +201,13 @@ public class ReserveController {
     @ApiOperation(value = "删除申请，逻辑删除")
     @DeleteMapping(value = "/deleteReserve/{id}")
     public RespBean deleteReserve(@PathVariable("id") Long id){
-        Reserve reserve = reserveService.getById(id);
-        //判断申请是否失败
-        if(reserve!=null) {
-            //判断申请是否成功
-            if(reserve.getReserveStatus()==51||reserve.getReserveStatus()==52){
-                return RespBean.error("请先取消预定再删除");
-            }
-        }else {
-            return RespBean.error("请核实预定id");
-        }
-        //删除申请
-        UpdateWrapper<Reserve> uw = new UpdateWrapper<>();
-        uw.set("is_delete",1);
-        uw.eq("id",id);
-        boolean update = reserveService.update(uw);
-        if(update) {
-            return RespBean.success("删除成功");
-        }else {
-            return RespBean.error("删除失败");
-        }
+        return reserveService.deleteReserveByIdP(id);
     }
 
     @ApiOperation(value = "取消申请")
     @PostMapping(value = "/cancelReserve/{id}")
     public RespBean cancelReserve(@PathVariable("id") Long id){
-        Reserve reserve = reserveService.getById(id);
-        //判断是否场地申请
-        if(reserve.getReserveTarget()==49) {
-            Activity activity = activityService.getById(reserve.getId());
-            //判断是否活动申请
-            if(activity!=null){
-                UpdateWrapper<Activity> uwActivity = new UpdateWrapper<>();
-                uwActivity.eq("reserve_id",activity.getId());
-                uwActivity.set("is_top",1);
-                boolean update1 = activityService.update(uwActivity);
-                if(!update1){
-                    return RespBean.error("删除失败");
-                }
-            }
-        }
-        //取消申请
-        UpdateWrapper<Reserve> uw = new UpdateWrapper<>();
-        uw.set("is_cancel",1);
-        uw.eq("id",id);
-        boolean update = reserveService.update(uw);
-        if(update) {
-            return RespBean.success("取消成功");
-        }else {
-            return RespBean.error("取消失败");
-        }
+        return reserveService.cancelReserveById(id);
     }
 
 }

@@ -4,7 +4,11 @@ import com.huangjiabin.site.sys.model.Place;
 import com.huangjiabin.site.sys.mapper.PlaceMapper;
 import com.huangjiabin.site.sys.service.PlaceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.huangjiabin.site.sys.service.ReserveService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -16,5 +20,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PlaceServiceImpl extends ServiceImpl<PlaceMapper, Place> implements PlaceService {
+    @Resource
+    private ReserveService reserveService;
 
+    //删除场地，逻辑删除
+    @Override
+    public Boolean deletePlaceByIdP(Long id) {
+
+        return false;
+    }
 }

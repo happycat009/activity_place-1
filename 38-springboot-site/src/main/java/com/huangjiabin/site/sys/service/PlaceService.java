@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-03-03
  */
 public interface PlaceService extends IService<Place> {
-
+    Boolean deletePlaceByIdP(Long id);
 }
