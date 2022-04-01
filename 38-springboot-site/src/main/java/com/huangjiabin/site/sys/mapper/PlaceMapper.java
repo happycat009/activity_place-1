@@ -12,5 +12,4 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2022-03-03
  */
 public interface PlaceMapper extends BaseMapper<Place> {
-
 }

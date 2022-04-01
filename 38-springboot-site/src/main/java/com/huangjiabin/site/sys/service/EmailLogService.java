@@ -14,4 +14,6 @@ import com.huangjiabin.site.sys.model.Reserve;
  */
 public interface EmailLogService extends IService<EmailLog> {
     Boolean sendEmail(Reserve reserve);
+    //delay延迟时间，毫秒
+    Boolean sendTTLEmail(Reserve reserve,Integer delay);
 }

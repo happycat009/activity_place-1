@@ -51,4 +51,28 @@ public class EmailLogServiceImpl extends ServiceImpl<EmailLogMapper, EmailLog> i
             return false;
         }
     }
+
+    @Override
+    public Boolean sendTTLEmail(Reserve reserve, Integer delay) {
+        EmailLog emailLog = new EmailLog();
+        emailLog.setReserveId(reserve.getId());
+        emailLog.setUserId(reserve.getUserId());
+        emailLog.setStatus(0);
+        emailLog.setRoutingKey(EmailConstants.EMAIL_ROUTING_KEY_NAME);
+        emailLog.setExchange(EmailConstants.EMAIL_EXCHANGE_NAME);
+        emailLog.setCount(EmailConstants.MAX_TRY_COUNT);
+        emailLog.setTryTime(LocalDateTime.now().plusMinutes(EmailConstants.MSG_TIMEOUT));
+        emailLog.setCreateTime(LocalDateTime.now());
+        emailLog.setUpdateTime(LocalDateTime.now());
+        int result = emailLogMapper.insert(emailLog);//消息入库
+        if(result==1){
+            //发送延迟消息
+            rabbitTemplate.convertAndSend("delayed.exchange", "delayed.routingkey", reserve, msg ->{
+                msg.getMessageProperties().setDelay(delay);
+                return msg;},new CorrelationData(String.valueOf(reserve.getId())));
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

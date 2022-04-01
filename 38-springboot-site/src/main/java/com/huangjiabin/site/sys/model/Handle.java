@@ -34,7 +34,7 @@ public class Handle implements Serializable {
     private Long userId;
 
     @ApiModelProperty(value = "操作")
-    private Integer handle;
+    private Integer handleResult;
 
     @ApiModelProperty(value = "是否邮件")
     private Integer isEmail;
@@ -46,10 +46,10 @@ public class Handle implements Serializable {
     private String remark;
 
     @ApiModelProperty(value = "操作目标表名")
-    private String tableName;
+    private Integer handleTarget;
 
     @ApiModelProperty(value = "操作时间")
-    private LocalDateTime time;
+    private LocalDateTime handleTime;
 
 
 }

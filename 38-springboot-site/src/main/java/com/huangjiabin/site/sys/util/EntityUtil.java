@@ -39,44 +39,51 @@ public class EntityUtil {
     /**
      * map转对象
      */
-    public static <T> T mapToBean(Map map, Class<T> beanClass) throws Exception {
-        T object = beanClass.newInstance();
-        Field[] fields = object.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            int mod = field.getModifiers();
-            if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
-                continue;
-            }
-            field.setAccessible(true);
-            if (map.containsKey(field.getName())) {
-                if(field.getType().getSimpleName().equals("Long")){
-                    if(map.get(field.getName()) instanceof Integer){
-                        field.set(object,((Integer)map.get(field.getName())).longValue());
-                    }else if(map.get(field.getName()) instanceof String){
-                        field.set(object,Long.valueOf((String)map.get(field.getName())).longValue());
-                    }else {
-                        field.set(object,map.get(field.getName()));
-                    }
-                }else if(field.getType().getSimpleName().equals("LocalDateTime")){
-                    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    LocalDateTime ldt;
-                    if(((String)map.get(field.getName())).lastIndexOf("00")==((String)map.get(field.getName())).length()-2){
-                        map.put(field.getName(),((String)map.get(field.getName())).substring(0,((String)map.get(field.getName())).length()-1)+"1");
-                        ldt = LocalDateTime.parse((String)map.get(field.getName()),df);
-                    }else {
-                        ldt = LocalDateTime.parse((String)map.get(field.getName()),df);
-                    }
-                    field.set(object,ldt);
-                }else if(field.getType().getSimpleName().equals("LocalDate")){
-                    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    LocalDate ldt = LocalDate.parse((String)map.get(field.getName()),df);
-                    field.set(object,ldt);
+    public static <T> T mapToBean(Map map, Class<T> beanClass) {
+        T object = null;
+        try {
+            object = beanClass.newInstance();
+            Field[] fields = object.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                int mod = field.getModifiers();
+                if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
+                    continue;
                 }
-                else {
-                    field.set(object, map.get(field.getName()));
-                }
+                field.setAccessible(true);
+                if (map.containsKey(field.getName())) {
+                    if(field.getType().getSimpleName().equals("Long")){
+                        if(map.get(field.getName()) instanceof Integer){
+                            field.set(object,((Integer)map.get(field.getName())).longValue());
+                        }else if(map.get(field.getName()) instanceof String){
+                            field.set(object,Long.valueOf((String)map.get(field.getName())).longValue());
+                        }else {
+                            field.set(object,map.get(field.getName()));
+                        }
+                    }else if(field.getType().getSimpleName().equals("LocalDateTime")){
+                        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                        LocalDateTime ldt;
+                        if(((String)map.get(field.getName())).lastIndexOf("00")==((String)map.get(field.getName())).length()-2){
+                            map.put(field.getName(),((String)map.get(field.getName())).substring(0,((String)map.get(field.getName())).length()-1)+"1");
+                            ldt = LocalDateTime.parse((String)map.get(field.getName()),df);
+                        }else {
+                            ldt = LocalDateTime.parse((String)map.get(field.getName()),df);
+                        }
+                        field.set(object,ldt);
+                    }else if(field.getType().getSimpleName().equals("LocalDate")){
+                        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        LocalDate ldt = LocalDate.parse((String)map.get(field.getName()),df);
+                        field.set(object,ldt);
+                    }
+                    else {
+                        field.set(object, map.get(field.getName()));
+                    }
 
+                }
             }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         return object;
     }

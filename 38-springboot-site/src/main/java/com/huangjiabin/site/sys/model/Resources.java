@@ -68,4 +68,7 @@ public class Resources implements Serializable {
     @ApiModelProperty(value = "资源照片")
     private String photo;
 
+    @ApiModelProperty(value = "自动通过延迟时间")
+    private Integer passTime;
+
 }

@@ -2,6 +2,7 @@ package com.huangjiabin.site.sys.service;
 
 import com.huangjiabin.site.sys.model.Place;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.huangjiabin.site.sys.model.RespBean;
 
 /**
  * <p>
@@ -13,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface PlaceService extends IService<Place> {
     Boolean deletePlaceByIdP(Long id);
+
+    RespBean checkPlaceById(Long id);
 }

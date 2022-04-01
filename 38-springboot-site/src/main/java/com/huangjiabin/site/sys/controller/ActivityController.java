@@ -92,13 +92,13 @@ public class ActivityController {
             uw.eq("id",map.get("targetId"));
             result = activityService.update(uw);
             if(result){
-                handle=EntityUtil.mapToBean(map,Handle.class);
-                handle.setHandle(47);
-                handle.setTableName("sys_activity");
-                handle.setTime(createTime);
-                handle.setIsEmail(0);
-                handle.setIsEmailSuccess(0);
-                result2 = handleService.save(handle);
+//                handle=EntityUtil.mapToBean(map,Handle.class);
+//                handle.setHandleResult(47);
+//                handle.setHandleTarget("sys_activity");
+//                handle.setTime(createTime);
+//                handle.setIsEmail(0);
+//                handle.setIsEmailSuccess(0);
+//                result2 = handleService.save(handle);
             }
             if(result2){
                 return RespBean.success("取消成功");

@@ -28,6 +28,7 @@ public class EmailTask {
 
     @Scheduled(cron = "0/10 * * * * ?")
     public void emailTask(){
+        //System.out.println("循环不止==============="+LocalDateTime.now());
         List<EmailLog> list = emailLogService.list(new QueryWrapper<EmailLog>().eq("status", 0).lt("try_time", LocalDateTime.now()));
         list.forEach(emailLog -> {
             //如果重复次数超过3次，更新状态为投递失败，不再重复
@@ -38,7 +39,6 @@ public class EmailTask {
                     .set("try_time",LocalDateTime.now().plusMinutes(EmailConstants.MSG_TIMEOUT)));
             Reserve reserve = reserveService.getById(emailLog.getReserveId());
             rabbitTemplate.convertAndSend(EmailConstants.EMAIL_EXCHANGE_NAME,EmailConstants.EMAIL_ROUTING_KEY_NAME,reserve,new CorrelationData(String.valueOf(emailLog.getEmailLogId())));
-
         });
     }
 

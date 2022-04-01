@@ -58,6 +58,8 @@ public class Place implements Serializable {
     @ApiModelProperty(value = "场地照片")
     private String photo;
 
+    @ApiModelProperty(value = "自动通过时间")
+    private Integer passTime;
 
 
 

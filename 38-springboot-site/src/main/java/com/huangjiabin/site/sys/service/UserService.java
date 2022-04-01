@@ -14,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
     RespBean checkUserCanCreate(User user);
+    RespBean checkUser(Long id);
 }

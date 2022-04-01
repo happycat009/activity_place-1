@@ -18,6 +18,7 @@
         <result column="remark" property="remark" />
         <result column="is_delete" property="isDelete"/>
         <result column="photo" property="photo"/>
+        <result column="pass_time" property="passTime" />
     </resultMap>
 
 </mapper>

@@ -7,12 +7,12 @@
         <id column="id" property="id" />
         <result column="target_id" property="targetId" />
         <result column="user_id" property="userId" />
-        <result column="handle" property="handle" />
+        <result column="handle_result" property="handleResult" />
         <result column="is_email" property="isEmail" />
         <result column="is_email_success" property="isEmailSuccess" />
         <result column="remark" property="remark" />
-        <result column="table_name" property="tableName" />
-        <result column="time" property="time" />
+        <result column="handle_target" property="handleTarget" />
+        <result column="handle_time" property="handleTime" />
     </resultMap>
 
 </mapper>

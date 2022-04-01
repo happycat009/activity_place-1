@@ -25,6 +25,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Resource
     UserMapper userMapper;
 
+    //检查账号是否可以被注册
     @Override
     public RespBean checkUserCanCreate(User user) {
         if(user.getPassword()==null||user.getPassword()==""){
@@ -40,5 +41,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return RespBean.error("账号已存在");
         }
         return RespBean.success("用户名可用");
+    }
+
+    //检查用户是否可用
+    @Override
+    public RespBean checkUser(Long id) {
+        User user = userMapper.selectById(id);
+        if(user!=null){
+            if(user.getDelFlag()==1){
+                return RespBean.error("账号已被删除");
+            }
+            if(user.getDisabled()==1){
+                return RespBean.error("账号已被禁用");
+            }
+            return RespBean.success("账号可用",user);
+        }
+        return RespBean.error("账号不存在");
     }
 }

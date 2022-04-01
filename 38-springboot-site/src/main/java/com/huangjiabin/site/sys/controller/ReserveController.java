@@ -49,31 +49,9 @@ public class ReserveController {
 
     @ApiOperation(value = "申请场地或资源")
     @PostMapping("/createReserve")
-    public RespBean placeReserve(@RequestBody Map map){
-        Reserve reserve;
-        try {
-            reserve = EntityUtil.mapToBean(map, Reserve.class);
-            //判断是否可以预定
-            if(reserveService.isCanReserve(reserve).getCode()==200){
-                reserve.setCreateTime(createTime);  //创建时间
-                reserve.setReserveStatus(52);      //预约状态   52预约中53预定成功54预定失败
-                //reserve.setReserveTarget(45);       //预约目标  49为场地 50为资源
-                reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
-                reserve.setIsCancel(0);             //是否取消
-                Boolean result = reserveService.save(reserve);
-                if(result){
-                    return RespBean.success("申请成功",reserve);
-                }
-            }else {
-                return RespBean.error("申请失败，请核实时间");
-            }
-        } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
-            return  RespBean.error("申请失败，请核实申请人和申请目标");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RespBean.error("申请失败");
+    public RespBean placeReserve(@RequestBody Map map) {
+        Reserve reserve = EntityUtil.mapToBean(map, Reserve.class);
+        return reserveService.createReserve(reserve);
     }
 
     /*
@@ -210,6 +188,7 @@ public class ReserveController {
     public RespBean cancelReserve(@PathVariable("id") Long id){
         return reserveService.cancelReserveById(id);
     }
+
 
 }
 
