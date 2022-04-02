@@ -12,6 +12,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,7 +54,7 @@ public class IndexController {
             //底层getAndAddInt(this, valueOffset, 1)
             int id = sign.getAndIncrement();
             pathMap.put(id, path);
-            //PipedOutputStream和PipedInputStream是管道输出流和管道输入流，配合使用可以实现线程间通信。
+//            PipedOutputStream和PipedInputStream是管道输出流和管道输入流，配合使用可以实现线程间通信。
             PipedOutputStream pipedOutputStream = new PipedOutputStream();
             PipedInputStream pipedInputStream = new PipedInputStream();
             pipedOutputStream.connect(pipedInputStream);
@@ -79,8 +81,10 @@ public class IndexController {
         }
         response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".flv");
         try {
+            FileOutputStream fileOutputStream = new FileOutputStream("D:/杂七杂八/"+
+                    DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now())+".flv");
             ServletOutputStream outputStream = response.getOutputStream();
-            write(id, outputStream);
+            write(id, outputStream,fileOutputStream);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         } finally {
@@ -89,11 +93,12 @@ public class IndexController {
         }
     }
 
-    private void write(int id, OutputStream outputStream) {
+    private void write(int id, OutputStream outputStream,FileOutputStream fileOutputStream) {
         try {
             String path = pathMap.get(id);
             PipedOutputStream pipedOutputStream = outputStreamMap.get(id);
             new Thread(() -> {
+                //获取视频类
                 MediaVideoTransfer mediaVideoTransfer = new MediaVideoTransfer();
                 mediaVideoTransfer.setOutputStream(pipedOutputStream);
                 mediaVideoTransfer.setRtspTransportType("udp");
@@ -102,7 +107,7 @@ public class IndexController {
                 mediaVideoTransfer.live();
             }).start();
             //输出
-            print(inputStreamMap.get(id), outputStream);
+            print(inputStreamMap.get(id), outputStream,fileOutputStream);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
@@ -110,10 +115,11 @@ public class IndexController {
         }
     }
 
-    private void print(InputStream inputStream, OutputStream outputStream) throws IOException {
+    private void print(InputStream inputStream, OutputStream outputStream,FileOutputStream fileOutputStream) throws IOException {
         byte[] buffer = new byte[1024];
         int length;
         while ((length = inputStream.read(buffer)) != -1) {
+            fileOutputStream.write(buffer,0,length);
             outputStream.write(buffer, 0, length);
         }
     }
@@ -133,6 +139,6 @@ public class IndexController {
     public static void main(String[] args) throws FileNotFoundException {
         IndexController indexController = new IndexController();
         AjaxResult ajaxResult = indexController.putVideoPath("D:/杂七杂八/好好说再见.mp4");
-        indexController.write((int) ajaxResult.get("data"), new FileOutputStream("D:/杂七杂八/好好说再见.mp4"));
+        //indexController.write((int) ajaxResult.get("data"), new FileOutputStream(LocalDateTime.now()+".flv"));
     }
 }

@@ -33,6 +33,8 @@ import java.util.Map;
 @RequestMapping("/sys/reserve")
 public class ReserveController {
     @Autowired
+    HandleService handleService;
+    @Autowired
     private ActivityService activityService;
     @Autowired
     private ReserveService reserveService;
@@ -61,76 +63,17 @@ public class ReserveController {
     @Transactional
     @PutMapping("/placeAndActivityReserve")
     public RespBean placeAndActivityReserve(@RequestBody Map map){
-        Reserve reserve;
-        Activity activity;
-        try {
-            reserve = EntityUtil.mapToBean(map, Reserve.class);
-            //判断是否可以预定
-            RespBean respBean = reserveService.isCanReserve(reserve);
-            if(respBean.getCode()==200){
-                //预定场地
-                activity = EntityUtil.mapToBean(map, Activity.class);
-                reserve.setCreateTime(createTime);  //创建时间
-                reserve.setReserveStatus(51);      //预约状态   51预约中52预定成功53预定失败
-                //reserve.setReserveTarget(45);       //预约目标  49为场地 50为资源
-                reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
-                reserve.setIsCancel(0);             //是否取消
-                Boolean result = reserveService.save(reserve);
-                if(result){
-                    //预定活动
-                    activity.setCreateTime(createTime);
-                    activity.setReserveId(reserve.getId());
-                    Boolean result2 = activityService.save(activity);
-                    Map mapResult = new HashMap();
-                    mapResult.put("reserve",reserve);
-                    mapResult.put("activity", activity);
-                    if(result&&result2){
-                        //发送邮箱
-                        Boolean result3 = emailLogService.sendEmail(reserve);
-                        if(result3){
-                            return RespBean.success("场地预约成功",mapResult);
-                        }
-                    }
-                }
-            }else {
-                return respBean;
-            }
-        }catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
-            return  RespBean.error("申请失败，请核实申请人id和申请目标id");
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
-        return RespBean.error("申请失败");
-    }
+        Reserve reserve = EntityUtil.mapToBean(map, Reserve.class);
+        Activity activity = EntityUtil.mapToBean(map, Activity.class);
+        return reserveService.createReserveWithActivity(reserve,activity);
 
+    }
 
     @ApiOperation(value = "通过或拒绝预定操作，45通46拒绝")
     @PutMapping("/reserveHandle")
-    public RespBean placeReserveHandle (@RequestBody Map map){
-        ReserveHandle reserveHandle;
-        try {
-            reserveHandle = EntityUtil.mapToBean(map,ReserveHandle.class);
-            if(reserveHandle.getHandle()==45){
-                UpdateWrapper<Reserve> uw = new UpdateWrapper();
-                uw.set("reserve_status",52);
-                uw.eq("id",reserveHandle.getReserveId());
-                reserveService.update(uw);
-            }else if(reserveHandle.getHandle()==46){
-                UpdateWrapper<Reserve> uw = new UpdateWrapper();
-                uw.set("reserve_status",53);
-                uw.eq("id",reserveHandle.getReserveId());
-                reserveService.update(uw);
-            }
-            Boolean result = reserveHandleService.save(reserveHandle);
-            if(result){
-                return RespBean.success("操作成功");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RespBean.error("操作失败");
+    public RespBean reserveHandle (@RequestBody Map map){
+        Handle handle=EntityUtil.mapToBean(map,Handle.class);
+        return handleService.handle(handle);
     }
 
     @ApiOperation(value = "分页查询所有预定信息")

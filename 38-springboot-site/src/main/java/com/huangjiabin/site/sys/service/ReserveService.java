@@ -28,5 +28,10 @@ public interface ReserveService extends IService<Reserve> {
 
     RespBean createReserve(Reserve reserve);
 
+    RespBean createReserveWithActivity(Reserve reserve,Activity activity);
+
+    RespBean createReserveActivity(Activity activity);
+
+
 
 }

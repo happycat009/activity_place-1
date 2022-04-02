@@ -54,20 +54,21 @@ public class EmailLogServiceImpl extends ServiceImpl<EmailLogMapper, EmailLog> i
 
     @Override
     public Boolean sendTTLEmail(Reserve reserve, Integer delay) {
+        //其实这里跟邮件没关系，主要是看操作是否成功
         EmailLog emailLog = new EmailLog();
-        emailLog.setReserveId(reserve.getId());
+        emailLog.setReserveId(reserve.getId()); //设置预定id
         emailLog.setUserId(reserve.getUserId());
         emailLog.setStatus(0);
         emailLog.setRoutingKey(EmailConstants.EMAIL_ROUTING_KEY_NAME);
         emailLog.setExchange(EmailConstants.EMAIL_EXCHANGE_NAME);
-        emailLog.setCount(EmailConstants.MAX_TRY_COUNT);
-        emailLog.setTryTime(LocalDateTime.now().plusMinutes(EmailConstants.MSG_TIMEOUT));
+        emailLog.setCount(0);
+        emailLog.setTryTime(LocalDateTime.now().plusSeconds(delay/1000+5000));
         emailLog.setCreateTime(LocalDateTime.now());
         emailLog.setUpdateTime(LocalDateTime.now());
         int result = emailLogMapper.insert(emailLog);//消息入库
         if(result==1){
             //发送延迟消息
-            rabbitTemplate.convertAndSend("delayed.exchange", "delayed.routingkey", reserve, msg ->{
+            rabbitTemplate.convertAndSend("delayed.exchange", "delayed.routingkey", emailLog, msg ->{
                 msg.getMessageProperties().setDelay(delay);
                 return msg;},new CorrelationData(String.valueOf(reserve.getId())));
             return true;

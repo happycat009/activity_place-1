@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huangjiabin.site.sys.model.*;
+import com.huangjiabin.site.sys.service.RoleService;
 import com.huangjiabin.site.sys.service.StudentService;
 import com.huangjiabin.site.sys.service.UserRoleService;
 import com.huangjiabin.site.sys.service.UserService;
@@ -16,6 +17,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -26,6 +31,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +59,8 @@ public class UserController {
 
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private RoleService roleService;
 
     @ApiOperation(value = "分页查询用户基本信息")
     @GetMapping("/getUserPage/{current}/{size}")
@@ -322,7 +330,7 @@ public class UserController {
         return RespBean.success("创建成功");
     }
 
-    @GetMapping(value = "downModel")
+    @GetMapping(value = "/downModel")
     public void download(HttpServletRequest request,HttpServletResponse response) {
 
         String filename = "批量注册模板.xls";
@@ -341,5 +349,45 @@ public class UserController {
             e.printStackTrace();
         }
     }
+    @ApiOperation(value = "查询用户角色")
+    @GetMapping(value = "/getUserRolesById/{id}")
+    public RespBean getUserRolesById(@PathVariable("id")Long id) {
+        List<Role> roles = roleService.selectRoleByUserId(id);
+        return RespBean.success("查询成功",roles);
+    }
+    @ApiOperation(value = "删除用户角色")
+    @DeleteMapping(value = "/deleteUserRole/{userId}/{roleId}")
+    public RespBean deleteUserRole(@PathVariable("userId")Long userId,@PathVariable("roleId")Long roleId) {
+        QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+        userRoleQueryWrapper.eq("user_id",userId);
+        userRoleQueryWrapper.eq("role_id",roleId);
+        boolean remove = userRoleService.remove(userRoleQueryWrapper);
+        if(remove){
+            return RespBean.success("删除成功");
+        }else {
+            return RespBean.error("删除失败");
+        }
+    }
+    @ApiOperation(value = "添加用户角色")
+    @PostMapping(value = "/addUserRole/{userId}/{roleId}")
+    public RespBean addUserRole(@PathVariable("userId")Long userId,@PathVariable("roleId")Long roleId) {
+        UserRole userRole = new UserRole();
+        userRole.setUserId(userId);
+        userRole.setRoleId(roleId);
+        try {
+            boolean save = userRoleService.save(userRole);
+
+            if (save) {
+                return RespBean.success("添加成功");
+            } else {
+                return RespBean.error("添加失败");
+            }
+        }catch (DuplicateKeyException e){
+            return RespBean.error("添加失败，重复角色");
+        }catch (DataIntegrityViolationException e){
+            return RespBean.error("添加失败，请检查是否存在");
+        }
+    }
+
 }
 
