@@ -8,6 +8,7 @@ import com.huangjiabin.site.sys.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.huangjiabin.site.sys.util.EntityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.convert.ReflectionEntityInstantiator;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -145,7 +146,7 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
         if(canReserve.getCode()==200){
             LocalDateTime createTime=LocalDateTime.now();
             reserve.setCreateTime(createTime);  //创建时间
-            reserve.setReserveStatus(52);      //预约状态   52预约中53预定成功54预定失败
+            reserve.setReserveStatus(51);      //预约状态   51预约中52预定成功53预定失败
             //reserve.setReserveTarget(45);       //预约目标  49为场地 50为资源
             reserve.setIsDelete(0);             //是否删除（逻辑删除）  0为否
             reserve.setIsCancel(0);             //是否取消
@@ -155,12 +156,12 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
                 Integer passTime;
                 if(reserve.getReserveTarget()==49){
                     passTime = ((Place) ((Map) canReserve.getData()).get("reserveTarget")).getPassTime();
-                    passTime=passTime*1000*60;
+                    passTime=passTime*1000*15;
                 }else {
                     passTime = ((Resources) ((Map) canReserve.getData()).get("reserveTarget")).getPassTime();
-                    passTime=passTime*1000*60;
+                    passTime=passTime*1000*15;
                 }
-                //发送邮箱
+                //发送消息队列
                 Boolean result3 = emailLogService.sendTTLEmail(reserve,passTime);
                 if(result3){
                     return RespBean.success("场地预约成功",reserve);
@@ -171,6 +172,39 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
         }else {
             return canReserve;
         }
+    }
+
+
+    @Override
+    public RespBean createReserveActivity(Activity activity) {
+        //预定活动
+        activity.setCreateTime(createTime);
+        int insert = activityMapper.insert(activity);
+        if(insert>0){
+            return RespBean.success("活动申请成功",activity);
+        }
+        return RespBean.error("活动申请失败");
+    }
+
+    //申请预定场地，带活动
+    @Override
+    public RespBean createReserveWithActivity(Reserve reserve,Activity activity) {
+            //申请预定场地
+            RespBean reserveRespBean = createReserve(reserve);
+            if(reserveRespBean.getCode()==200){
+                activity.setReserveId(reserve.getId());
+                RespBean reserveActivityRespBean = createReserveActivity(activity);
+                if(reserveActivityRespBean.getCode()==200){
+                    Map mapResult = new HashMap();
+                    mapResult.put("reserve",reserveRespBean.getData());
+                    mapResult.put("activity", reserveActivityRespBean.getData());
+                    return RespBean.success("申请场地和活动成功",mapResult);
+                }else {
+                    return reserveActivityRespBean;
+                }
+            }else {
+                return reserveRespBean;
+            }
     }
 
 }

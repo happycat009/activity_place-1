@@ -2,18 +2,17 @@ package com.huangjiabin.site.sys.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.huangjiabin.site.sys.model.Authority;
 import com.huangjiabin.site.sys.model.RespBean;
 import com.huangjiabin.site.sys.model.Role;
 import com.huangjiabin.site.sys.service.RoleService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
