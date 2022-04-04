@@ -122,7 +122,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         ,"/sys/sendEmail/**"
                         ,"/sys/user/createUser"
                         ,"/sys/user//createUserStudent"
-                        ,"/**"
+                        ,"/sys/downloadRegisterModel"
+                        ,"/sys/user/createUserBatch"
+                        ,"/sys/activity/getActivityPageP/**"
+                        ,"/getVideo"
+                        ,"/putVideo"
+                        //,"/**"
                                         );
     }
 }
